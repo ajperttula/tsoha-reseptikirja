@@ -10,4 +10,5 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    recipe_count = db.session.execute("SELECT COUNT(*) FROM recipes").fetchone()[0]
+    return render_template("index.html", recipe_count=recipe_count)
