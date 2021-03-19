@@ -1,10 +1,10 @@
 # Reseptikirja
 
-Sivusto on sähköinen reseptikirja, jossa voi selata muiden käyttäjien lisäämiä reseptejä sekä lisätä omia.
+Sovellus on sähköinen reseptikirja, jossa voi selata muiden käyttäjien lisäämiä reseptejä sekä lisätä omia.
 
 ### Ominaisuudet
 
-* Sivustoa voi selata joko kirjautumatta (vierailija) tai kirjautuneena (käyttäjä/ylläpitäjä)
+* Reseptejä voi selata joko kirjautumatta (vierailija) tai kirjautuneena (käyttäjä/ylläpitäjä)
 * Reseptejä voi hakea hakusanalla tai tagilla
 * Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen
 * Käyttäjä voi arvioida ja kommentoida reseptejä
