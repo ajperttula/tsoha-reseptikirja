@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Uusi resepti</title>
+</head>
+<body>
+  <h2>Lisää uusi resepti</h2>
+  <p>
+    <form action="/add" method="POST">
+      <p>
+        Otsikko: <br>
+        <input type="text" name="title">
+      </p>
+      <p>
+        Kuvaus: <br>
+        <input type="text" name="description">
+      </p>
+      <p>
+        Ainesosat: <br>
+        <input type="text" name="ingredient"> <br>
+        <input type="text" name="ingredient"> <br>
+        <input type="text" name="ingredient">
+      </p>
+      <p>
+        Ohje: <br>
+        <textarea name="instruction" rows="5" cols="40"></textarea>
+      </p>
+      <input type="submit" value="Lisää">
+    </form>
+  </p>
+</body>
+</html>
