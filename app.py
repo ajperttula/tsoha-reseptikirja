@@ -31,4 +31,12 @@ def add():
             sql = "INSERT INTO ingredients (recipe_id, name) VALUES (:recipe_id, :i)"
             db.session.execute(sql, {"recipe_id":recipe_id, "i":i})
     db.session.commit()
-    return redirect("/")
+    return redirect(f"/recipe/{recipe_id}")
+
+@app.route("/recipe/<int:id>")
+def recipe(id):
+    sql = "SELECT title, description, instruction FROM recipes WHERE id=:id"    # kannattaisko hakea yhtenä hakuna?
+    recipe = db.session.execute(sql, {"id":id}).fetchone()
+    sql = "SELECT name FROM ingredients WHERE recipe_id=:id"
+    ingredients = db.session.execute(sql, {"id":id}).fetchall()
+    return render_template("recipe.html", recipe=recipe, ingredients=ingredients)
