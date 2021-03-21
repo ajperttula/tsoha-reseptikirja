@@ -21,8 +21,9 @@ def new_recipe():
 def add():
     title = request.form["title"]
     description = request.form["description"]
-    ingredients = request.form.getlist("ingredient")
     instruction = request.form["instruction"]
+    ingredients = request.form.getlist("ingredient")
+    tags = request.form.getlist("tag")
     sql = """INSERT INTO recipes (title, description, instruction) 
              VALUES (:title, :description, :instruction) RETURNING id"""
     recipe_id = db.session.execute(sql, {"title":title, "description":description, "instruction":instruction}).fetchone()[0]
@@ -30,6 +31,12 @@ def add():
         if i != "":
             sql = "INSERT INTO ingredients (recipe_id, ingredient) VALUES (:recipe_id, :i)"
             db.session.execute(sql, {"recipe_id":recipe_id, "i":i})
+    for t in tags:
+        if t != "":
+            sql = "SELECT id FROM tags WHERE tag=:t"
+            tag_id = db.session.execute(sql, {"t":t}).fetchone()[0]
+            sql = "INSERT INTO recipetags (recipe_id, tag_id) VALUES (:recipe_id, :tag_id)"
+            db.session.execute(sql, {"recipe_id":recipe_id, "tag_id":tag_id})
     db.session.commit()
     return redirect(f"/recipe/{recipe_id}")
 
