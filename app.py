@@ -28,7 +28,7 @@ def add():
     recipe_id = db.session.execute(sql, {"title":title, "description":description, "instruction":instruction}).fetchone()[0]
     for i in ingredients:
         if i != "":
-            sql = "INSERT INTO ingredients (recipe_id, name) VALUES (:recipe_id, :i)"
+            sql = "INSERT INTO ingredients (recipe_id, ingredient) VALUES (:recipe_id, :i)"
             db.session.execute(sql, {"recipe_id":recipe_id, "i":i})
     db.session.commit()
     return redirect(f"/recipe/{recipe_id}")
@@ -37,6 +37,6 @@ def add():
 def recipe(id):
     sql = "SELECT title, description, instruction FROM recipes WHERE id=:id"    # kannattaisko hakea yhtenä hakuna?
     recipe = db.session.execute(sql, {"id":id}).fetchone()
-    sql = "SELECT name FROM ingredients WHERE recipe_id=:id"
+    sql = "SELECT ingredient FROM ingredients WHERE recipe_id=:id"
     ingredients = db.session.execute(sql, {"id":id}).fetchall()
     return render_template("recipe.html", recipe=recipe, ingredients=ingredients)
