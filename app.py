@@ -61,6 +61,10 @@ def create_user():
         return render_template("error.html", error="Antamasi käyttäjätunnus on liian lyhyt.")
     if len(username) > 20:
         return render_template("error.html", error="Antamasi käyttäjätunnus on liian pitkä.")
+    sql = "SELECT username FROM users WHERE username=:username"
+    result = db.session.execute(sql, {"username":username}).fetchone()
+    if result != None:
+        return render_template("error.html", error="Käyttäjätunnus varattu.")
     password = request.form["password"]
     password_check = request.form["password_check"]
     if password != password_check:
