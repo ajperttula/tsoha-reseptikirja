@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Luo tunnus</title>
+</head>
+<body>
+  <h2>Luo käyttäjätunnus</h2>
+  <p>
+    Käyttäjätunnuksen on oltava 3-20 merkkiä pitkä. 
+    Salasanan on oltava vähintään 8-32 merkkiä pitkä ja 
+    sen pitää sisältää sekä pieniä että isoja kirjaimia.
+  </p>
+  <form action="/create-user" method="POST" onsubmit="return check(this)">
+    <p>
+      Tunnus: <br>
+      <input type="text" name="username">
+    </p>
+    <p>
+      Salasana: <br>
+      <input type="password" name="password">
+    </p>
+    <p>
+      Salasana uudelleen: <br>
+      <input type="password" name="password_check">
+    </p>
+    <p>
+      <input type="submit" value="Luo tunnus">
+    </p>
+  </form>
+  <script>
+    function check(form) {
+      if (form.username.value.length < 3) {
+        alert("Käyttäjätunnus on liian lyhyt");
+      } else if (form.username.value.length > 20) {
+        alert("Käyttäjätunnus on liian pitkä");
+      } else if (form.password.value.length < 8) {
+        alert("Salasana on liian lyhyt");
+      } else if (form.password.value.length > 32) {
+        alert("Salasana on liian pitkä");
+      } else if (form.password.value.search(/[a-z]/) < 0 || form.password.value.search(/[A-Z]/) < 0) {
+        alert("Salasanan pitää sisältää pieniä ja suuria kirjaimia");
+      } else if (form.password.value != form.password_check.value) {
+        alert("Tarkista salasana");
+      } else {
+        return true;
+      }
+      return false;
+    }
+  </script>
+</body>
+</html>
