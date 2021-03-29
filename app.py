@@ -26,9 +26,12 @@ def add_recipe():
     instruction = request.form["instruction"]
     ingredients = request.form.getlist("ingredient")
     tags = request.form.getlist("tag")
-    sql = """INSERT INTO recipes (title, description, instruction) 
-             VALUES (:title, :description, :instruction) RETURNING id"""
-    recipe_id = db.session.execute(sql, {"title":title, "description":description, "instruction":instruction}).fetchone()[0]
+    username = session["username"]
+    sql = "SELECT id FROM users WHERE username=:username"
+    user_id = db.session.execute(sql, {"username":username}).fetchone()[0]
+    sql = """INSERT INTO recipes (title, description, instruction, user_id) 
+             VALUES (:title, :description, :instruction, :user_id) RETURNING id"""
+    recipe_id = db.session.execute(sql, {"title":title, "description":description, "instruction":instruction, "user_id":user_id}).fetchone()[0]
     for i in ingredients:
         if i != "":
             sql = "INSERT INTO ingredients (recipe_id, ingredient) VALUES (:recipe_id, :i)"
