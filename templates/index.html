@@ -12,11 +12,23 @@
   <p>
     <a href="/">Etusivu</a>
   </p>
+  {% if session.username %}
   <p>
-    <a href="/new-user">Luo tunnus</a>
+    Hei, {{ session.username }}!
   </p>
   <p>
     <a href="/new-recipe">Lisää uusi resepti</a>
   </p>
+  <p>
+    <a href="/logout">Kirjaudu ulos</a>
+  </p>
+  {% else %}
+  <p>
+    <a href="/login">Kirjaudu sisään</a>
+  </p>
+  <p>
+    <a href="/new-user">Luo tunnus</a>
+  </p>
+  {% endif %}
 </body>
 </html>

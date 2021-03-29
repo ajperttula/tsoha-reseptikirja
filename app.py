@@ -76,3 +76,26 @@ def create_user():
     db.session.execute(sql, {"username":username, "hash_value":hash_value})
     db.session.commit()
     return redirect("/")
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route("/check-login", methods=["POST"])
+def check_login():
+    username = request.form["username"]
+    password = request.form["password"]
+    sql = "SELECT password FROM users WHERE username=:username"
+    result = db.session.execute(sql, {"username":username}).fetchone()
+    if result == None:
+        return render_template("error.html", error="Käyttäjätunnusta ei löytynyt.")
+    hash_value = result[0]
+    if check_password_hash(hash_value, password):
+        session["username"] = username
+        return redirect("/")
+    return render_template("error.html", error="Väärä salasana.")
+
+@app.route("/logout")
+def logout():
+    del session["username"]
+    return redirect("/")
