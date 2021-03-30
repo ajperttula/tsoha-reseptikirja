@@ -115,6 +115,10 @@ def add_comment():
     recipe_id = request.form["recipe_id"]
     sender_id = get_user_id()
     comment = request.form["comment"]
+    if len(comment) == 0:
+        return render_template("error.html", error="Kommentti on tyhjä.")
+    if len(comment) > 1000:
+        return render_template("error.html", error="Kommentti on liian pitkä.")
     sql = """INSERT INTO comments (recipe_id, sender_id, comment, sent_at) 
              VALUES (:recipe_id, :sender_id, :comment, NOW())"""
     db.session.execute(sql, {"recipe_id":recipe_id, "sender_id":sender_id, "comment":comment})

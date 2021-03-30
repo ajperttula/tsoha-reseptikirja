@@ -33,8 +33,8 @@
   </p>
   {% if session.username %}
   <p>
-    Lisää kommentti: <br>
-    <form action="/add-comment" method="POST">
+    Lisää kommentti (max. 1000 merkkiä): <br>
+    <form action="/add-comment" method="POST" onsubmit="return check(this)">
       <p>
         <input type="hidden" name="recipe_id" value="{{ id }}">
         <textarea name="comment" rows="5" cols="40"></textarea>
@@ -50,5 +50,17 @@
   <p>
     <a href="/">Etusivulle</a>
   </p>
+  <script>
+    function check(form) {
+      if (form.comment.value.length > 1000) {
+        alert("Kommentti on liian pitkä.");
+      } else if (form.comment.value.length == 0) {
+        alert("Kommentti on tyhjä.")
+      } else {
+        return true;
+      }
+      return false;
+    }
+  </script>
 </body>
 </html>
