@@ -8,6 +8,7 @@ CREATE TABLE users (
 CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
     creator_id INTEGER REFERENCES users,
+    created_at TIMESTAMP,
     title TEXT,
     description TEXT,
     instruction TEXT
@@ -33,7 +34,7 @@ CREATE TABLE commments (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes,
     sender_id INTEGER REFERENCES users,
-    comment TEXT
+    comment TEXT,
     sent_at TIMESTAMP
 );
 

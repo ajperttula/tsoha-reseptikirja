@@ -29,8 +29,8 @@ def add_recipe():
     ingredients = request.form.getlist("ingredient")
     tags = request.form.getlist("tag")
     creator_id = get_user_id()
-    sql = """INSERT INTO recipes (creator_id, title, description, instruction) 
-             VALUES (:creator_id, :title, :description, :instruction) RETURNING id"""
+    sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction) 
+             VALUES (:creator_id, NOW(), :title, :description, :instruction) RETURNING id"""
     recipe_id = db.session.execute(sql, {"creator_id":creator_id, "title":title, "description":description, "instruction":instruction}).fetchone()[0]
     for i in ingredients:
         if i != "":
@@ -47,9 +47,9 @@ def add_recipe():
 
 @app.route("/recipe/<int:id>")
 def recipe(id):
-    sql = "SELECT creator_id, title, description, instruction FROM recipes WHERE id=:id"    # kannattaisko hakea yhtenä hakuna?
+    sql = "SELECT * FROM recipes WHERE id=:id"    # kannattaisko hakea yhtenä hakuna?
     recipe = db.session.execute(sql, {"id":id}).fetchone()
-    creator_id = recipe[0]
+    creator_id = recipe[1]
     sql = "SELECT username FROM users WHERE id=:creator_id"
     creator = db.session.execute(sql, {"creator_id":creator_id}).fetchone()[0]
     sql = "SELECT ingredient FROM ingredients WHERE recipe_id=:id"
@@ -57,7 +57,7 @@ def recipe(id):
     sql = """SELECT U.username, C.comment, C.sent_at FROM users U, comments C 
              WHERE U.id=C.sender_id AND C.recipe_id=:id ORDER BY C.sent_at"""
     comments = db.session.execute(sql, {"id":id}).fetchall()
-    return render_template("recipe.html", creator=creator, recipe=recipe[1:], ingredients=ingredients, comments=comments, id=id)
+    return render_template("recipe.html", creator=creator, recipe=recipe[2:], ingredients=ingredients, comments=comments, id=id)
 
 @app.route("/new-user")
 def new_user():
