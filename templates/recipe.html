@@ -23,6 +23,18 @@
     {{ recipe[2] }}
   </p>
   <hr>
+  {% if session.username %}
+  <p>
+    Lisää kommentti: <br>
+    <form action="/add-comment" method="POST">
+      <p>
+        <input type="hidden" name="recipe_id" value="{{ id }}">
+        <textarea name="comment" rows="5" cols="40"></textarea>
+      </p>
+      <input type="submit" value="Lisää">
+    </form>
+  </p>
+  {% endif %}
   <p>
     <a href="/">Etusivulle</a>
   </p>

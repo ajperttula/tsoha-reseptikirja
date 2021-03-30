@@ -26,9 +26,7 @@ def add_recipe():
     instruction = request.form["instruction"]
     ingredients = request.form.getlist("ingredient")
     tags = request.form.getlist("tag")
-    username = session["username"]
-    sql = "SELECT id FROM users WHERE username=:username"
-    creator_id = db.session.execute(sql, {"username":username}).fetchone()[0]
+    creator_id = get_user_id()
     sql = """INSERT INTO recipes (creator_id, title, description, instruction) 
              VALUES (:creator_id, :title, :description, :instruction) RETURNING id"""
     recipe_id = db.session.execute(sql, {"creator_id":creator_id, "title":title, "description":description, "instruction":instruction}).fetchone()[0]
@@ -54,7 +52,7 @@ def recipe(id):
     creator = db.session.execute(sql, {"creator_id":creator_id}).fetchone()[0]
     sql = "SELECT ingredient FROM ingredients WHERE recipe_id=:id"
     ingredients = db.session.execute(sql, {"id":id}).fetchall()
-    return render_template("recipe.html", creator=creator, recipe=recipe[1:], ingredients=ingredients)
+    return render_template("recipe.html", creator=creator, recipe=recipe[1:], ingredients=ingredients, id=id)
 
 @app.route("/new-user")
 def new_user():
@@ -108,3 +106,19 @@ def check_login():
 def logout():
     del session["username"]
     return redirect("/")
+
+@app.route("/add-comment", methods=["POST"])
+def add_comment():
+    recipe_id = request.form["recipe_id"]
+    sender_id = get_user_id()
+    comment = request.form["comment"]
+    sql = """INSERT INTO comments (recipe_id, sender_id, comment, sent_at) 
+             VALUES (:recipe_id, :sender_id, :comment, NOW())"""
+    db.session.execute(sql, {"recipe_id":recipe_id, "sender_id":sender_id, "comment":comment})
+    db.session.commit()
+    return redirect(f"recipe/{recipe_id}")
+
+def get_user_id():
+    username = session["username"]
+    sql = "SELECT id FROM users WHERE username=:username"
+    return db.session.execute(sql, {"username":username}).fetchone()[0]
