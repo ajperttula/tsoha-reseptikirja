@@ -125,6 +125,15 @@ def add_comment():
     db.session.commit()
     return redirect(f"recipe/{recipe_id}")
 
+@app.route("/grade-recipe", methods=["POST"])
+def grade_recipe():
+    recipe_id = request.form["recipe_id"]
+    grade = request.form["grade"]
+    sql = "INSERT INTO grades (recipe_id, grade) VALUES (:recipe_id, :grade)"
+    db.session.execute(sql, {"recipe_id":recipe_id, "grade":grade})
+    db.session.commit()
+    return redirect(f"recipe/{recipe_id}")
+
 def get_user_id():
     username = session["username"]
     sql = "SELECT id FROM users WHERE username=:username"
