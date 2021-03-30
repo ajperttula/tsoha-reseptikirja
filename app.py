@@ -52,7 +52,10 @@ def recipe(id):
     creator = db.session.execute(sql, {"creator_id":creator_id}).fetchone()[0]
     sql = "SELECT ingredient FROM ingredients WHERE recipe_id=:id"
     ingredients = db.session.execute(sql, {"id":id}).fetchall()
-    return render_template("recipe.html", creator=creator, recipe=recipe[1:], ingredients=ingredients, id=id)
+    sql = """SELECT U.username, C.comment, C.sent_at FROM users U, comments C 
+             WHERE U.id=C.sender_id AND C.recipe_id=:id ORDER BY C.sent_at"""
+    comments = db.session.execute(sql, {"id":id}).fetchall()
+    return render_template("recipe.html", creator=creator, recipe=recipe[1:], ingredients=ingredients, comments=comments, id=id)
 
 @app.route("/new-user")
 def new_user():

@@ -23,6 +23,14 @@
     {{ recipe[2] }}
   </p>
   <hr>
+  <p>
+    Kommentit: <br>
+    {% for c in comments %}
+    Lähettäjä: {{ c[0] }} Aika: {{ c[2].strftime("%Y-%m-%d %H:%M:%S") }} <br>
+    {{ c[1] }}
+    <hr>
+    {% endfor %}
+  </p>
   {% if session.username %}
   <p>
     Lisää kommentti: <br>
@@ -33,6 +41,10 @@
       </p>
       <input type="submit" value="Lisää">
     </form>
+  </p>
+  {% else %}
+  <p>
+    Kirjaudu sisään kommentoidaksesi.
   </p>
   {% endif %}
   <p>
