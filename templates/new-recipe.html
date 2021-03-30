@@ -28,13 +28,9 @@
       </p>
       <p>
         Tagit: <br>
-        <input type="checkbox" name="tag" value="Liha"> Liha
-        <input type="checkbox" name="tag" value="Kala"> Kala
-        <input type="checkbox" name="tag" value="Kana"> Kana <br>
-        <input type="checkbox" name="tag" value="Kasvis"> Kasvis
-        <input type="checkbox" name="tag" value="Salaatti"> Salaatti
-        <input type="checkbox" name="tag" value="Välipala"> Välipala <br>
-        <input type="checkbox" name="tag" value="Jälkiruoka"> Jälkiruoka
+        {% for t in tags %}
+        <input type="checkbox" name="tag" value="{{ t[0] }}"> {{ t[0] }}
+        {% endfor %}
       </p>
       <input type="submit" value="Lisää">
     </form>

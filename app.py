@@ -17,7 +17,9 @@ def index():
 
 @app.route("/new-recipe")
 def new_recipe():
-    return render_template("new-recipe.html")
+    sql = "SELECT tag FROM tags"
+    tags = db.session.execute(sql).fetchall()
+    return render_template("new-recipe.html", tags=tags)
 
 @app.route("/add-recipe", methods=["POST"])
 def add_recipe():
