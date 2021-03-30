@@ -34,6 +34,7 @@ CREATE TABLE commments (
     recipe_id INTEGER REFERENCES recipes,
     sender_id INTEGER REFERENCES users,
     comment TEXT
+    sent_at TIMESTAMP
 );
 
 CREATE TABLE grades (
