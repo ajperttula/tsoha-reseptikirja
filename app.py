@@ -47,11 +47,14 @@ def add_recipe():
 
 @app.route("/recipe/<int:id>")
 def recipe(id):
-    sql = "SELECT title, description, instruction FROM recipes WHERE id=:id"    # kannattaisko hakea yhtenä hakuna?
+    sql = "SELECT creator_id, title, description, instruction FROM recipes WHERE id=:id"    # kannattaisko hakea yhtenä hakuna?
     recipe = db.session.execute(sql, {"id":id}).fetchone()
+    creator_id = recipe[0]
+    sql = "SELECT username FROM users WHERE id=:creator_id"
+    creator = db.session.execute(sql, {"creator_id":creator_id}).fetchone()[0]
     sql = "SELECT ingredient FROM ingredients WHERE recipe_id=:id"
     ingredients = db.session.execute(sql, {"id":id}).fetchall()
-    return render_template("recipe.html", recipe=recipe, ingredients=ingredients)
+    return render_template("recipe.html", creator=creator, recipe=recipe[1:], ingredients=ingredients)
 
 @app.route("/new-user")
 def new_user():

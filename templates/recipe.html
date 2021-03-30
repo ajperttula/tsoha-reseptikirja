@@ -7,12 +7,17 @@
 <body>
   <h2>{{ recipe[0] }}</h2>
   <p>
+    Lisännyt käyttäjä {{ creator }}
+  </p>
+  <p>
     {{ recipe[1] }}
   </p>
   <p>
-    {% for i in ingredients %}
-    {{ i[0] }} <br>
-    {% endfor %}
+    <ul>
+      {% for i in ingredients %}
+      <li>{{ i[0] }}</li>
+      {% endfor %}
+    </ul>
   </p>
   <p>
     {{ recipe[2] }}
