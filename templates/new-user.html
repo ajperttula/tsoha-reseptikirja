@@ -2,9 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Luo tunnus</title>
+  {% extends "layout.html" %}
+  {% block title %}Luo tunnus{% endblock %}
 </head>
 <body>
+  {% block content %}
   <h2>Luo käyttäjätunnus</h2>
   <p>
     Käyttäjätunnuksen on oltava 3-20 merkkiä pitkä. 
@@ -48,5 +50,6 @@
       return false;
     }
   </script>
+  {% endblock %}
 </body>
 </html>

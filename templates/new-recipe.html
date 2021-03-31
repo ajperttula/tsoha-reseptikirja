@@ -2,9 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Uusi resepti</title>
+  {% extends "layout.html" %}
+  {% block title %}Lisää resepti{% endblock %}
 </head>
 <body>
+  {% block content %}
   <h2>Lisää uusi resepti</h2>
   <p>
     <form action="/add-recipe" method="POST">
@@ -35,5 +37,6 @@
       <input type="submit" value="Lisää">
     </form>
   </p>
+  {% endblock %}
 </body>
 </html>

@@ -2,15 +2,15 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Virhe</title>
+  {% extends "layout.html" %}
+  {% block title %}Virhe{% endblock %}
 </head>
 <body>
+  {% block content %}
   <h2>Tapahtui virhe</h2>
   <p>
     {{ error }}
   </p>
-  <p>
-    <a href="/">Etusivulle</a>
-  </p>
+  {% endblock %}
 </body>
 </html>

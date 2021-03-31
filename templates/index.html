@@ -2,33 +2,14 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Etusivu</title>
+  {% extends "layout.html" %}
+  {% block title %}Etusivu{% endblock %}
 </head>
 <body>
-  <h1>Tervetuloa sähköiseen reseptikirjaan!</h1>
+  {% block content %}
   <p>
     Reseptejä yhteensä {{ recipe_count }} kappaletta.
   </p>
-  <p>
-    <a href="/">Etusivu</a>
-  </p>
-  {% if session.username %}
-  <p>
-    Hei, {{ session.username }}!
-  </p>
-  <p>
-    <a href="/new-recipe">Lisää uusi resepti</a>
-  </p>
-  <p>
-    <a href="/logout">Kirjaudu ulos</a>
-  </p>
-  {% else %}
-  <p>
-    <a href="/login">Kirjaudu sisään</a>
-  </p>
-  <p>
-    <a href="/new-user">Luo tunnus</a>
-  </p>
-  {% endif %}
+  {% endblock %}
 </body>
 </html>

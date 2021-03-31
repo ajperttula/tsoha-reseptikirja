@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reseptikirja - {% block title %}{% endblock %}</title>
+</head>
+<body>
+  <h1>RESEPTIKIRJA</h1>
+  <p>
+    <a href="/">Etusivu</a> | 
+    {% if session.username %}
+    <a href="/new-recipe">Lisää resepti</a> | 
+    <a href="/logout">Kirjaudu ulos</a>
+    {% else %}
+    <a href="/login">Kirjaudu sisään</a> | 
+    <a href="/new-user">Luo tunnus</a>
+    {% endif %}
+  </p>
+  <hr>
+  {% block content %}{% endblock %}
+</body>
+</html>
