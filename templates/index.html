@@ -7,8 +7,11 @@
 </head>
 <body>
   {% block content %}
+  <h2>Uusimmat reseptit</h2>
   <p>
-    Reseptejä yhteensä {{ recipe_count }} kappaletta.
+    {% for r in recipes %}
+    <a href="/recipe/{{ r[0] }}">{{ r[1] }}</a> <br>
+    {% endfor %}
   </p>
   {% endblock %}
 </body>
