@@ -9,7 +9,7 @@
   {% block content %}
  <h2>Kirjaudu sisään</h2>
  <p>
-  <form action="/check-login" method="POST">
+  <form action="/check-login" method="POST" onsubmit="return check(this)">
     <p>
       Käyttäjätunnus: <br>
       <input type="text" name="username">
@@ -21,6 +21,16 @@
     <input type="submit" value="Kirjaudu">
   </form>
  </p>
+ <script>
+   function check(form) {
+     if (form.username.value.length == 0 || form.password.value.length == 0) {
+       alert("Tarkista käyttäjätunnus ja salasana");
+     } else {
+       return true;
+     }
+     return false;
+   }
+ </script>
  {% endblock %}
 </body>
 </html>
