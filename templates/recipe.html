@@ -3,30 +3,37 @@
 <head>
   <meta charset="utf-8">
   {% extends "layout.html" %}
-  {% block title %}recipe[1]{% endblock %}
+  {% block title %}{{ recipe[3] }}{% endblock %}
 </head>
 <body>
   {% block content %}
-  <h2>{{ recipe[1] }}</h2>
+  <h2>{{ recipe[3] }}</h2>
   <p>
-    Reseptin lisäsi: {{ creator }} - {{ recipe[0].strftime("%Y-%m-%d") }}
+    Reseptin lisäsi: {{ creator }} - {{ recipe[2].strftime("%Y-%m-%d") }}
+    {% if own_recipe %}
+    <form action="/delete-recipe" method="POST">
+      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
+      <input type="hidden" name="creator_id" value="{{ recipe[1] }}">
+      <input type="submit" onclick="return confirm('Haluatko varmasti poistaa reseptin?');" value="Poista">
+    </form>
+    {% endif %}
   </p>
   <p>
     Arvostele resepti: <br>
     <form action="/grade-recipe" method="POST">
-      <input type="hidden" name="recipe_id" value="{{ id }}">
+      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
       <select name="grade">
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
-        <option value="5">5</option>
+        <option value="5" selected>5</option>
       </select>
       <input type="submit" value="Lähetä">
     </form>
   </p>
   <p>
-    {{ recipe[2] }}
+    {{ recipe[4] }}
   </p>
   <p>
     <ul>
@@ -36,7 +43,7 @@
     </ul>
   </p>
   <p>
-    {{ recipe[3] }}
+    {{ recipe[5] }}
   </p>
   <hr>
   <p>
@@ -52,7 +59,7 @@
     Lisää kommentti (max. 1000 merkkiä): <br>
     <form action="/add-comment" method="POST" onsubmit="return check(this)">
       <p>
-        <input type="hidden" name="recipe_id" value="{{ id }}">
+        <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
         <textarea name="comment" rows="5" cols="40"></textarea>
       </p>
       <input type="submit" value="Lisää">

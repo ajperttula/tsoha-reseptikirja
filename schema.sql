@@ -34,7 +34,7 @@ CREATE TABLE recipetags (
     visible INTEGER
 );
 
-CREATE TABLE commments (
+CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes,
     sender_id INTEGER REFERENCES users,

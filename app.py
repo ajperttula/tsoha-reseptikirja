@@ -12,7 +12,7 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    recipes = db.session.execute("SELECT id, title FROM recipes ORDER BY id DESC").fetchall()
+    recipes = db.session.execute("SELECT id, title FROM recipes WHERE visible=1 ORDER BY id DESC").fetchall()
     return render_template("index.html", recipes=recipes)
 
 @app.route("/new-recipe")
@@ -29,24 +29,28 @@ def add_recipe():
     ingredients = request.form.getlist("ingredient")
     tags = request.form.getlist("tag")
     creator_id = get_user_id()
-    sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction) 
-             VALUES (:creator_id, NOW(), :title, :description, :instruction) RETURNING id"""
+    sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction, visible) 
+             VALUES (:creator_id, NOW(), :title, :description, :instruction, 1) RETURNING id"""
     recipe_id = db.session.execute(sql, {"creator_id":creator_id, "title":title, "description":description, "instruction":instruction}).fetchone()[0]
     for i in ingredients:
         if i != "":
-            sql = "INSERT INTO ingredients (recipe_id, ingredient) VALUES (:recipe_id, :i)"
+            sql = "INSERT INTO ingredients (recipe_id, ingredient, visible) VALUES (:recipe_id, :i, 1)"
             db.session.execute(sql, {"recipe_id":recipe_id, "i":i})
     for t in tags:
         if t != "":
             sql = "SELECT id FROM tags WHERE tag=:t"
             tag_id = db.session.execute(sql, {"t":t}).fetchone()[0]
-            sql = "INSERT INTO recipetags (recipe_id, tag_id) VALUES (:recipe_id, :tag_id)"
+            sql = "INSERT INTO recipetags (recipe_id, tag_id, visible) VALUES (:recipe_id, :tag_id, 1)"
             db.session.execute(sql, {"recipe_id":recipe_id, "tag_id":tag_id})
     db.session.commit()
     return redirect(f"/recipe/{recipe_id}")
 
 @app.route("/recipe/<int:id>")
 def recipe(id):
+    sql = "SELECT visible FROM recipes WHERE id=:id"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    if not result or result[0] == 0:
+        return render_template("error.html", error="Reseptiä ei löytynyt")
     sql = "SELECT * FROM recipes WHERE id=:id"    # kannattaisko hakea yhtenä hakuna?
     recipe = db.session.execute(sql, {"id":id}).fetchone()
     creator_id = recipe[1]
@@ -57,7 +61,11 @@ def recipe(id):
     sql = """SELECT U.username, C.comment, C.sent_at FROM users U, comments C 
              WHERE U.id=C.sender_id AND C.recipe_id=:id ORDER BY C.sent_at"""
     comments = db.session.execute(sql, {"id":id}).fetchall()
-    return render_template("recipe.html", creator=creator, recipe=recipe[2:], ingredients=ingredients, comments=comments, id=id)
+    if get_user_id() == creator_id:
+        own_recipe = True
+    else:
+        own_recipe = False
+    return render_template("recipe.html", creator=creator, recipe=recipe, ingredients=ingredients, comments=comments, own_recipe=own_recipe)
 
 @app.route("/new-user")
 def new_user():
@@ -81,7 +89,7 @@ def create_user():
     if password == password.lower() or password == password.upper():
         return render_template("error.html", error="Salasanan pitää sisältää pieniä ja suuria kirjaimia.")
     hash_value = generate_password_hash(password)
-    sql = "INSERT INTO users (username, password, role) VALUES (:username, :hash_value, 0)"
+    sql = "INSERT INTO users (username, password, role, visible) VALUES (:username, :hash_value, 0, 1)"
     try:
         db.session.execute(sql, {"username":username, "hash_value":hash_value})
     except:
@@ -97,9 +105,9 @@ def login():
 def check_login():
     username = request.form["username"]
     password = request.form["password"]
-    sql = "SELECT password FROM users WHERE username=:username"
+    sql = "SELECT password, visible FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username}).fetchone()
-    if result == None:
+    if result == None or result[1] == 0:
         return render_template("error.html", error="Käyttäjätunnusta ei löytynyt.")
     hash_value = result[0]
     if check_password_hash(hash_value, password):
@@ -121,8 +129,8 @@ def add_comment():
         return render_template("error.html", error="Kommentti on tyhjä.")
     if len(comment) > 1000:
         return render_template("error.html", error="Kommentti on liian pitkä.")
-    sql = """INSERT INTO comments (recipe_id, sender_id, comment, sent_at) 
-             VALUES (:recipe_id, :sender_id, :comment, NOW())"""
+    sql = """INSERT INTO comments (recipe_id, sender_id, comment, sent_at, visible) 
+             VALUES (:recipe_id, :sender_id, :comment, NOW(), 1)"""
     db.session.execute(sql, {"recipe_id":recipe_id, "sender_id":sender_id, "comment":comment})
     db.session.commit()
     return redirect(f"recipe/{recipe_id}")
@@ -131,7 +139,7 @@ def add_comment():
 def grade_recipe():
     recipe_id = request.form["recipe_id"]
     grade = request.form["grade"]
-    sql = "INSERT INTO grades (recipe_id, grade) VALUES (:recipe_id, :grade)"
+    sql = "INSERT INTO grades (recipe_id, grade, visible) VALUES (:recipe_id, :grade, 1)"
     db.session.execute(sql, {"recipe_id":recipe_id, "grade":grade})
     db.session.commit()
     return redirect(f"recipe/{recipe_id}")
@@ -140,12 +148,34 @@ def grade_recipe():
 def search():
     keyword = "%" + request.args["keyword"].lower() + "%"
     sql = """SELECT DISTINCT R.id, R.title FROM recipes R, ingredients I WHERE R.id=I.recipe_id AND 
-             (LOWER(R.title) LIKE :keyword OR LOWER(R.description) LIKE :keyword OR 
+             R.visible=1 AND (LOWER(R.title) LIKE :keyword OR LOWER(R.description) LIKE :keyword OR 
              LOWER(R.instruction) LIKE :keyword OR LOWER(I.ingredient) LIKE :keyword)"""
     results = db.session.execute(sql, {"keyword":keyword}).fetchall()
     return render_template("result.html", results=results)
 
+@app.route("/delete-recipe", methods=["POST"])
+def delete_recipe():
+    recipe_id = request.form["recipe_id"]
+    creator_id = request.form["creator_id"]
+    if get_user_id() != int(creator_id):
+        return render_template("error.html", error="Toiminto ei ole sallittu.")
+    sql = "UPDATE recipes SET visible=0 WHERE id=:recipe_id"
+    db.session.execute(sql, {"recipe_id":recipe_id})
+    sql = "UPDATE ingredients SET visible=0 WHERE recipe_id=:recipe_id"
+    db.session.execute(sql, {"recipe_id":recipe_id})
+    sql = "UPDATE recipetags SET visible=0 WHERE recipe_id=:recipe_id"
+    db.session.execute(sql, {"recipe_id":recipe_id})
+    sql = "UPDATE comments SET visible=0 WHERE recipe_id=:recipe_id"
+    db.session.execute(sql, {"recipe_id":recipe_id})
+    sql = "UPDATE grades SET visible=0 WHERE recipe_id=:recipe_id"
+    db.session.execute(sql, {"recipe_id":recipe_id})
+    db.session.commit()
+    return redirect("/")
+
 def get_user_id():
-    username = session["username"]
+    try:
+        username = session["username"]
+    except:
+        return None
     sql = "SELECT id FROM users WHERE username=:username"
     return db.session.execute(sql, {"username":username}).fetchone()[0]
