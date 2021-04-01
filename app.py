@@ -136,6 +136,15 @@ def grade_recipe():
     db.session.commit()
     return redirect(f"recipe/{recipe_id}")
 
+@app.route("/search")
+def search():
+    keyword = "%" + request.args["keyword"].lower() + "%"
+    sql = """SELECT DISTINCT R.id, R.title FROM recipes R, ingredients I WHERE R.id=I.recipe_id AND 
+             (LOWER(R.title) LIKE :keyword OR LOWER(R.description) LIKE :keyword OR 
+             LOWER(R.instruction) LIKE :keyword OR LOWER(I.ingredient) LIKE :keyword)"""
+    results = db.session.execute(sql, {"keyword":keyword}).fetchall()
+    return render_template("result.html", results=results)
+
 def get_user_id():
     username = session["username"]
     sql = "SELECT id FROM users WHERE username=:username"

@@ -15,6 +15,10 @@
     <a href="/login">Kirjaudu sisään</a> | 
     <a href="/new-user">Luo tunnus</a>
     {% endif %}
+    <form action="/search" method="GET">
+      <input type="text" name="keyword">
+      <input type="submit" value="Etsi">
+    </form>
   </p>
   <hr>
   {% block content %}{% endblock %}
