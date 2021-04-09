@@ -33,17 +33,17 @@
   <script>
     function check(form) {
       if (form.username.value.length < 3) {
-        alert("Käyttäjätunnus on liian lyhyt");
+        alert("Käyttäjätunnus on liian lyhyt.");
       } else if (form.username.value.length > 20) {
-        alert("Käyttäjätunnus on liian pitkä");
+        alert("Käyttäjätunnus on liian pitkä.");
       } else if (form.password.value.length < 8) {
-        alert("Salasana on liian lyhyt");
+        alert("Salasana on liian lyhyt.");
       } else if (form.password.value.length > 32) {
-        alert("Salasana on liian pitkä");
+        alert("Salasana on liian pitkä.");
       } else if (form.password.value.search(/[a-z]/) < 0 || form.password.value.search(/[A-Z]/) < 0) {
-        alert("Salasanan pitää sisältää pieniä ja suuria kirjaimia");
+        alert("Salasanan pitää sisältää pieniä ja suuria kirjaimia.");
       } else if (form.password.value != form.password_check.value) {
-        alert("Tarkista salasana");
+        alert("Salasanat eivät täsmää.");
       } else {
         return true;
       }
