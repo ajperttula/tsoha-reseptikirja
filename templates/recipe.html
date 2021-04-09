@@ -18,6 +18,7 @@
     </form>
     {% endif %}
   </p>
+  {% if session.username %}
   <p>
     Arvostele resepti: <br>
     <form action="/grade-recipe" method="POST">
@@ -32,6 +33,7 @@
       <input type="submit" value="Lähetä">
     </form>
   </p>
+  {% endif %}
   <p>
     {{ recipe[4] }}
   </p>
