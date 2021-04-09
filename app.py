@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
-from os import getenv
+from os import getenv, urandom
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
@@ -23,6 +23,7 @@ def new_recipe():
 
 @app.route("/add-recipe", methods=["POST"])
 def add_recipe():
+    csrf_check(request.form["csrf_token"])
     title = request.form["title"]
     description = request.form["description"]
     instruction = request.form["instruction"]
@@ -125,6 +126,7 @@ def check_login():
     hash_value = result[0]
     if check_password_hash(hash_value, password):
         session["username"] = username
+        session["csrf_token"] = urandom(16).hex()
         return redirect("/")
     return render_template("error.html", error="Väärä salasana.")
 
@@ -135,6 +137,7 @@ def logout():
 
 @app.route("/add-comment", methods=["POST"])
 def add_comment():
+    csrf_check(request.form["csrf_token"])
     recipe_id = request.form["recipe_id"]
     sender_id = get_user_id()
     comment = request.form["comment"]
@@ -150,6 +153,7 @@ def add_comment():
 
 @app.route("/grade-recipe", methods=["POST"])
 def grade_recipe():
+    csrf_check(request.form["csrf_token"])
     recipe_id = request.form["recipe_id"]
     grade = request.form["grade"]
     sql = "INSERT INTO grades (recipe_id, grade, visible) VALUES (:recipe_id, :grade, 1)"
@@ -168,6 +172,7 @@ def search():
 
 @app.route("/delete-recipe", methods=["POST"])
 def delete_recipe():
+    csrf_check(request.form["csrf_token"])
     recipe_id = request.form["recipe_id"]
     creator_id = request.form["creator_id"]
     if get_user_id() != int(creator_id):
@@ -192,3 +197,7 @@ def get_user_id():
         return None
     sql = "SELECT id FROM users WHERE username=:username"
     return db.session.execute(sql, {"username":username}).fetchone()[0]
+
+def csrf_check(token):
+    if session["csrf_token"] != token:
+        return render_template("error.html", error="Toiminto ei ole sallittu.")

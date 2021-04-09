@@ -10,6 +10,7 @@
   <h2>Lisää uusi resepti</h2>
   <p>
     <form action="/add-recipe" method="POST" onsubmit="return check(this)">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <p>
         Otsikko: <br>
         <input type="text" name="title" size="50" maxlength="50">

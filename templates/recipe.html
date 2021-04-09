@@ -12,6 +12,7 @@
     Reseptin lisäsi: {{ creator }} - {{ recipe[2].strftime("%Y-%m-%d") }}
     {% if own_recipe %}
     <form action="/delete-recipe" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
       <input type="hidden" name="creator_id" value="{{ recipe[1] }}">
       <input type="submit" onclick="return confirm('Haluatko varmasti poistaa reseptin?');" value="Poista">
@@ -22,6 +23,7 @@
   <p>
     Arvostele resepti: <br>
     <form action="/grade-recipe" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
       <select name="grade">
         <option value="1">1</option>
@@ -67,6 +69,7 @@
     Lisää kommentti (max. 1000 merkkiä): <br>
     <form action="/add-comment" method="POST" onsubmit="return check(this)">
       <p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
         <textarea name="comment" rows="5" cols="40" maxlength="1000"></textarea>
       </p>
