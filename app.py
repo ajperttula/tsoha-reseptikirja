@@ -27,6 +27,17 @@ def add_recipe():
     description = request.form["description"]
     instruction = request.form["instruction"]
     ingredients = request.form.getlist("ingredient")
+    if len(title) == 0:
+        return render_template("error.html", error="Reseptillä ei ole otsikkoa.")
+    if len(title) > 50:
+        return render_template("error.html", error="Otsikon maksimipituus on 50 merkkiä.")
+    if len(description) > 200:
+        return render_template("error.html", error="Kuvauksen maksimipituus on 200 merkkiä.")
+    if len(instruction) > 2000:
+        return render_template("error.html", error="Ohjeen maksimipituus on 2000 merkkiä.")
+    for i in ingredients:
+        if len(i) > 100:
+            return render_template("error.html", error="Ainesosan maksimipituus on 100 merkkiä.")
     tags = request.form.getlist("tag")
     creator_id = get_user_id()
     sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction, visible) 

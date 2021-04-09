@@ -68,7 +68,7 @@
     <form action="/add-comment" method="POST" onsubmit="return check(this)">
       <p>
         <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
-        <textarea name="comment" rows="5" cols="40"></textarea>
+        <textarea name="comment" rows="5" cols="40" maxlength="1000"></textarea>
       </p>
       <input type="submit" value="Lisää">
     </form>

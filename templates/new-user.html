@@ -16,15 +16,15 @@
   <form action="/create-user" method="POST" onsubmit="return check(this)">
     <p>
       Tunnus: <br>
-      <input type="text" name="username">
+      <input type="text" name="username" minlength="3" maxlength="20">
     </p>
     <p>
       Salasana: <br>
-      <input type="password" name="password">
+      <input type="password" name="password" minlength="8", maxlength="32">
     </p>
     <p>
       Salasana uudelleen: <br>
-      <input type="password" name="password_check">
+      <input type="password" name="password_check" minlength="8", maxlength="32">
     </p>
     <p>
       <input type="submit" value="Luo tunnus">

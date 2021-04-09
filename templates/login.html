@@ -12,11 +12,11 @@
   <form action="/check-login" method="POST" onsubmit="return check(this)">
     <p>
       Käyttäjätunnus: <br>
-      <input type="text" name="username">
+      <input type="text" name="username" minlength="3" maxlength="20">
     </p>
     <p>
       Salasana: <br>
-      <input type="password" name="password">
+      <input type="password" name="password" minlength="8", maxlength="32">
     </p>
     <input type="submit" value="Kirjaudu">
   </form>

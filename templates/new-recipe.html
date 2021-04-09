@@ -9,32 +9,24 @@
   {% block content %}
   <h2>Lisää uusi resepti</h2>
   <p>
-    <form action="/add-recipe" method="POST">
+    <form action="/add-recipe" method="POST" onsubmit="return check(this)">
       <p>
         Otsikko: <br>
-        <input type="text" name="title" size="50">
+        <input type="text" name="title" size="50" maxlength="50">
       </p>
       <p>
         Kuvaus: <br>
-        <textarea name="description" rows="3" cols="40"></textarea>
+        <textarea name="description" rows="3" cols="40" maxlength="200"></textarea>
       </p>
       <p>
         Ainesosat ja määrät: <br>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
-        <p><input type="text" name="ingredient" size="50"></p>
+        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
+        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
+        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
       </p>
       <p>
         Ohje: <br>
-        <textarea name="instruction" rows="6" cols="40"></textarea>
+        <textarea name="instruction" rows="6" cols="40" maxlength="2000"></textarea>
       </p>
       <p>
         Tagit: <br>
@@ -45,6 +37,22 @@
       <input type="submit" value="Lisää">
     </form>
   </p>
+  <script>
+    function check(form) {
+      if (form.title.value.length == 0) {
+        alert("Anna reseptille otsikko.");
+      } else if (form.title.value.length > 50) {
+        alert("Otsikon maksimipituus on 50 merkkiä.");
+      } else if (form.description.value.length > 200) {
+        alert("Kuvauksen maksimipituus on 200 merkkiä.");
+      } else if (form.instruction.value.length > 2000) {
+        alert("Ohjeen maksimipituus on 2000 merkkiä.");
+      } else {
+        return true;
+      }
+      return false;
+    }
+  </script>
   {% endblock %}
 </body>
 </html>
