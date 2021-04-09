@@ -35,6 +35,12 @@
   </p>
   {% endif %}
   <p>
+    Tagit: 
+    {% for t in tags %}
+    {{ t[0] }} 
+    {% endfor %}
+  </p>
+  <p>
     {{ recipe[4] }}
   </p>
   <p>

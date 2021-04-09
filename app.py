@@ -56,6 +56,8 @@ def recipe(id):
     creator_id = recipe[1]
     sql = "SELECT username FROM users WHERE id=:creator_id"
     creator = db.session.execute(sql, {"creator_id":creator_id}).fetchone()[0]
+    sql = "SELECT T.tag FROM tags T, recipetags R WHERE R.recipe_id=:id AND T.id=R.tag_id AND R.visible=1"
+    tags = db.session.execute(sql, {"id":id}).fetchall()
     sql = "SELECT ingredient FROM ingredients WHERE recipe_id=:id"
     ingredients = db.session.execute(sql, {"id":id}).fetchall()
     sql = """SELECT U.username, C.comment, C.sent_at FROM users U, comments C 
@@ -65,7 +67,7 @@ def recipe(id):
         own_recipe = True
     else:
         own_recipe = False
-    return render_template("recipe.html", creator=creator, recipe=recipe, ingredients=ingredients, comments=comments, own_recipe=own_recipe)
+    return render_template("recipe.html", creator=creator, recipe=recipe, tags=tags, ingredients=ingredients, comments=comments, own_recipe=own_recipe)
 
 @app.route("/new-user")
 def new_user():
