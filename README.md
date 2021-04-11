@@ -2,14 +2,22 @@
 
 Sovellus on sähköinen reseptikirja, jossa voi selata muiden käyttäjien lisäämiä reseptejä sekä lisätä omia.
 
-### Ominaisuudet
+Testaa sovellusta [Herokussa](https://tsoha-reseptikirja.herokuapp.com/)
 
-* Reseptejä voi selata joko kirjautumatta (vierailija) tai kirjautuneena (käyttäjä/ylläpitäjä)
-* Reseptejä voi hakea hakusanalla tai tagilla
+### Ominaisuudet (nykyinen versio)
+
+* Reseptejä voi selata joko kirjautumatta (vierailija) tai kirjautuneena (käyttäjä)
+* Reseptejä voi hakea hakusanalla
 * Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen
-* Käyttäjä voi arvioida ja kommentoida reseptejä
-* Käyttäjä voi lisätä reseptejä suosikkeihin
 * Käyttäjä voi lisätä omia reseptejä
-* Reseptiin lisätään otsikko, ainesosat, määrät, annoskoko, tagit sekä ohje
-* Annoskokoa voi muuttaa, jolloin ainesosien määrät muuttuvat vastaavasti
-* Ylläpitäjä voi lisäksi poistaa reseptejä, kommentteja sekä käyttäjiä
+* Reseptiin lisätään otsikko, kuvaus, ainesosat, ohje sekä tagit
+* Käyttäjä voi poistaa lisäämänsä reseptin
+* Käyttäjä voi arvioida ja kommentoida reseptejä
+
+### Tulossa
+
+* Ylläpitäjäprofiili
+* Ylläpitäjä voi poistaa reseptejä, kommentteja sekä käyttäjiä
+* Reseptejä voi lajitella lisäyspäivän, arvosanan ja tagin mukaan
+* Käyttäjä voi lisätä reseptejä suosikeihin
+* Käyttäjä voi muokata lisäämäänsä reseptiä
