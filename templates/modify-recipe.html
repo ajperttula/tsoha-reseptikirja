@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  {% extends "layout.html" %}
+  {% block title %}Muokkaa reseptiä{% endblock %}
+</head>
+<body>
+  {% block content %}
+  <h2>Muokkaa reseptiä</h2>
+  <p>
+    <form action="/execute-modification" method="POST" onsubmit="return check(this)">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+      <p>
+        Otsikko: <br>
+        <input type="text" name="title" value="{{ title }}" size="50" maxlength="50">
+      </p>
+      <p>
+        Kuvaus: <br>
+        <textarea name="description" rows="3" cols="40" maxlength="200">{{ description }}</textarea>
+      </p>
+      <p>
+        Ainesosat ja määrät: <br>
+        {% for i in ingredients %}
+        <p><input type="text" name="ingredient" value="{{ i }}"size="50" maxlength="100"></p>
+        {% endfor %}
+        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
+        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
+      </p>
+      <p>
+        Ohje: <br>
+        <textarea name="instruction" rows="6" cols="40" maxlength="2000">{{ instruction }}</textarea>
+      </p>
+      <p>
+        Tagit: <br>
+        {% for t in tags %}
+        {% if t[1] in recipetags %}
+        <input type="checkbox" name="tag" value="{{ t[0] }}" checked> {{ t[1] }}
+        {% else %}
+        <input type="checkbox" name="tag" value="{{ t[0] }}"> {{ t[1] }}
+        {% endif %}
+        {% endfor %}
+      </p>
+      <input type="submit" value="Tallenna">
+      <a href="/recipe/{{ recipe_id }}"><button type="button">Peruuta</button></a>
+    </form>
+  </p>
+  <script>
+    function check(form) {
+      if (form.title.value.length == 0) {
+        alert("Anna reseptille otsikko");
+      } else if (form.title.value.length > 50) {
+        alert("Otsikon maksimipituus on 50 merkkiä");
+      } else if (form.description.value.length > 200) {
+        alert("Kuvauksen maksimipituus on 200 merkkiä");
+      } else if (form.instruction.value.length > 2000) {
+        alert("Ohjeen maksimipituus on 2000 merkkiä");
+      } else {
+        return true;
+      }
+      return false;
+    }
+  </script>
+  {% endblock %}
+</body>
+</html>

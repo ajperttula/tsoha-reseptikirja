@@ -38,7 +38,7 @@
       <p>
         Tagit: <br>
         {% for t in tags %}
-        <input type="checkbox" name="tag" value="{{ t[0] }}"> {{ t[0] }}
+        <input type="checkbox" name="tag" value="{{ t[0] }}"> {{ t[1] }}
         {% endfor %}
       </p>
       <input type="submit" value="Lisää">
