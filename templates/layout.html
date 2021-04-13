@@ -9,11 +9,11 @@
   <p>
     <a href="/">Etusivu</a> | 
     {% if session.username %}
-    <a href="/new-recipe">Lisää resepti</a> | 
+    <a href="/add-recipe">Lisää resepti</a> | 
     <a href="/logout">Kirjaudu ulos</a>
     {% else %}
     <a href="/login">Kirjaudu sisään</a> | 
-    <a href="/new-user">Luo tunnus</a>
+    <a href="/create-user">Luo tunnus</a>
     {% endif %}
     <form action="/search" method="GET">
       <input type="text" name="keyword">

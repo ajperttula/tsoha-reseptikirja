@@ -15,38 +15,37 @@ def index():
     recipes = db.session.execute("SELECT id, title FROM recipes WHERE visible=1 ORDER BY id DESC").fetchall()
     return render_template("index.html", recipes=recipes)
 
-@app.route("/new-recipe")
-def new_recipe():
-    sql = "SELECT id, tag FROM tags"
-    tags = db.session.execute(sql).fetchall()
-    return render_template("new-recipe.html", tags=tags)
-
-@app.route("/add-recipe", methods=["POST"])
+@app.route("/add-recipe", methods=["GET", "POST"])
 def add_recipe():
-    csrf_check(request.form["csrf_token"])
-    title = request.form["title"]
-    description = request.form["description"]
-    instruction = request.form["instruction"]
-    ingredients = request.form.getlist("ingredient")
-    tags = request.form.getlist("tag")
-    check_recipe_inputs(title, description, instruction, ingredients)
-    creator_id = get_user_id()
-    sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction, visible) 
-             VALUES (:creator_id, NOW(), :title, :description, :instruction, 1) RETURNING id"""
-    try:
-        recipe_id = db.session.execute(sql, {"creator_id":creator_id, "title":title, "description":description, "instruction":instruction}).fetchone()[0]
-    except:
-        return render_template("error.html", error="Otsikko on jo käytössä toisessa reseptissä.")
-    for i in ingredients:
-        if i != "":
-            sql = "INSERT INTO ingredients (recipe_id, ingredient, visible) VALUES (:recipe_id, :i, 1)"
-            db.session.execute(sql, {"recipe_id":recipe_id, "i":i})
-    for t in tags:
-        if t != "":
-            sql = "INSERT INTO recipetags (recipe_id, tag_id, visible) VALUES (:recipe_id, :t, 1)"
-            db.session.execute(sql, {"recipe_id":recipe_id, "t":t})
-    db.session.commit()
-    return redirect(f"/recipe/{recipe_id}")
+    if request.method == "GET":
+        sql = "SELECT id, tag FROM tags"
+        tags = db.session.execute(sql).fetchall()
+        return render_template("new-recipe.html", tags=tags)
+    if request.method == "POST":
+        csrf_check(request.form["csrf_token"])
+        title = request.form["title"]
+        description = request.form["description"]
+        instruction = request.form["instruction"]
+        ingredients = request.form.getlist("ingredient")
+        tags = request.form.getlist("tag")
+        check_recipe_inputs(title, description, instruction, ingredients)
+        creator_id = get_user_id()
+        sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction, visible) 
+                 VALUES (:creator_id, NOW(), :title, :description, :instruction, 1) RETURNING id"""
+        try:
+            recipe_id = db.session.execute(sql, {"creator_id":creator_id, "title":title, "description":description, "instruction":instruction}).fetchone()[0]
+        except:
+            return render_template("error.html", error="Otsikko on jo käytössä toisessa reseptissä.")
+        for i in ingredients:
+            if i != "":
+                sql = "INSERT INTO ingredients (recipe_id, ingredient, visible) VALUES (:recipe_id, :i, 1)"
+                db.session.execute(sql, {"recipe_id":recipe_id, "i":i})
+        for t in tags:
+            if t != "":
+                sql = "INSERT INTO recipetags (recipe_id, tag_id, visible) VALUES (:recipe_id, :t, 1)"
+                db.session.execute(sql, {"recipe_id":recipe_id, "t":t})
+        db.session.commit()
+        return redirect(f"/recipe/{recipe_id}")
 
 @app.route("/modify-recipe", methods=["POST"])
 def modify_recipe():
@@ -73,7 +72,10 @@ def execute_modification():
     check_recipe_inputs(title, description, instruction, ingredients)
 
     sql = "UPDATE recipes SET title=:title, description=:description, instruction=:instruction WHERE id=:recipe_id"
-    db.session.execute(sql, {"title":title, "description":description, "instruction":instruction, "recipe_id":recipe_id})
+    try:
+        db.session.execute(sql, {"title":title, "description":description, "instruction":instruction, "recipe_id":recipe_id})
+    except:
+        return render_template("error.html", error="Otsikko on jo käytössä toisessa reseptissä.")
 
     sql = "SELECT id FROM ingredients WHERE recipe_id=:recipe_id AND visible=1"
     old_ingredients = db.session.execute(sql, {"recipe_id":recipe_id}).fetchall()
@@ -194,58 +196,57 @@ def delete_recipe():
     db.session.commit()
     return redirect("/")
 
-@app.route("/new-user")
-def new_user():
-    return render_template("new-user.html")
-
-@app.route("/create-user", methods=["POST"])
+@app.route("/create-user", methods=["GET", "POST"])
 def create_user():
-    username = request.form["username"]
-    if len(username) < 3:
-        return render_template("error.html", error="Antamasi käyttäjätunnus on liian lyhyt.")
-    if len(username) > 20:
-        return render_template("error.html", error="Antamasi käyttäjätunnus on liian pitkä.")
-    password = request.form["password"]
-    password_check = request.form["password_check"]
-    if password != password_check:
-        return render_template("error.html", error="Tarkista salasana.")
-    if len(password) < 8:
-        return render_template("error.html", error="Antamasi salasana on liian lyhyt.")
-    if len(password) > 32:
-        return render_template("error.html", error="Antamasi salasana on liian pitkä.")
-    if password == password.lower() or password == password.upper():
-        return render_template("error.html", error="Salasanan pitää sisältää pieniä ja suuria kirjaimia.")
-    hash_value = generate_password_hash(password)
-    sql = "INSERT INTO users (username, password, role, visible) VALUES (:username, :hash_value, 0, 1)"
-    try:
-        db.session.execute(sql, {"username":username, "hash_value":hash_value})
-    except:
-        return render_template("error.html", error="Käyttäjätunnus varattu.")
-    db.session.commit()
-    return redirect("/")
-
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
-@app.route("/check-login", methods=["POST"])
-def check_login():
-    username = request.form["username"]
-    password = request.form["password"]
-    sql = "SELECT password, visible FROM users WHERE username=:username"
-    result = db.session.execute(sql, {"username":username}).fetchone()
-    if result == None or result[1] == 0:
-        return render_template("error.html", error="Käyttäjätunnusta ei löytynyt.")
-    hash_value = result[0]
-    if check_password_hash(hash_value, password):
-        session["username"] = username
-        session["csrf_token"] = urandom(16).hex()
+    if request.method == "GET":
+        return render_template("new-user.html")
+    if request.method == "POST":
+        username = request.form["username"]
+        if len(username) < 3:
+            return render_template("error.html", error="Antamasi käyttäjätunnus on liian lyhyt.")
+        if len(username) > 20:
+            return render_template("error.html", error="Antamasi käyttäjätunnus on liian pitkä.")
+        password = request.form["password"]
+        password_check = request.form["password_check"]
+        if password != password_check:
+            return render_template("error.html", error="Tarkista salasana.")
+        if len(password) < 8:
+            return render_template("error.html", error="Antamasi salasana on liian lyhyt.")
+        if len(password) > 32:
+            return render_template("error.html", error="Antamasi salasana on liian pitkä.")
+        if password == password.lower() or password == password.upper():
+            return render_template("error.html", error="Salasanan pitää sisältää pieniä ja suuria kirjaimia.")
+        hash_value = generate_password_hash(password)
+        sql = "INSERT INTO users (username, password, role, visible) VALUES (:username, :hash_value, 0, 1)"
+        try:
+            db.session.execute(sql, {"username":username, "hash_value":hash_value})
+        except:
+            return render_template("error.html", error="Käyttäjätunnus varattu.")
+        db.session.commit()
         return redirect("/")
-    return render_template("error.html", error="Väärä salasana.")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        sql = "SELECT password, visible FROM users WHERE username=:username"
+        result = db.session.execute(sql, {"username":username}).fetchone()
+        if result == None or result[1] == 0:
+            return render_template("error.html", error="Käyttäjätunnusta ei löytynyt.")
+        hash_value = result[0]
+        if check_password_hash(hash_value, password):
+            session["username"] = username
+            session["csrf_token"] = urandom(16).hex()
+            return redirect("/")
+        return render_template("error.html", error="Väärä salasana.")
 
 @app.route("/logout")
 def logout():
     del session["username"]
+    del session["csrf_token"]
     return redirect("/")
 
 def get_user_id():
