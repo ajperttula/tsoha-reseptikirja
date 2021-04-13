@@ -33,7 +33,10 @@ def add_recipe():
     creator_id = get_user_id()
     sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction, visible) 
              VALUES (:creator_id, NOW(), :title, :description, :instruction, 1) RETURNING id"""
-    recipe_id = db.session.execute(sql, {"creator_id":creator_id, "title":title, "description":description, "instruction":instruction}).fetchone()[0]
+    try:
+        recipe_id = db.session.execute(sql, {"creator_id":creator_id, "title":title, "description":description, "instruction":instruction}).fetchone()[0]
+    except:
+        return render_template("error.html", error="Otsikko on jo käytössä toisessa reseptissä.")
     for i in ingredients:
         if i != "":
             sql = "INSERT INTO ingredients (recipe_id, ingredient, visible) VALUES (:recipe_id, :i, 1)"
