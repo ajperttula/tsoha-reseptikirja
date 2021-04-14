@@ -1,8 +1,7 @@
 from app import app
 from flask import render_template, request, redirect, session
-from os import urandom
-from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
+import users
 
 @app.route("/")
 def index():
@@ -196,27 +195,14 @@ def create_user():
         return render_template("new-user.html")
     if request.method == "POST":
         username = request.form["username"]
-        if len(username) < 3:
-            return render_template("error.html", error="Antamasi käyttäjätunnus on liian lyhyt.")
-        if len(username) > 20:
-            return render_template("error.html", error="Antamasi käyttäjätunnus on liian pitkä.")
         password = request.form["password"]
-        password_check = request.form["password_check"]
-        if password != password_check:
-            return render_template("error.html", error="Tarkista salasana.")
-        if len(password) < 8:
-            return render_template("error.html", error="Antamasi salasana on liian lyhyt.")
-        if len(password) > 32:
-            return render_template("error.html", error="Antamasi salasana on liian pitkä.")
-        if password == password.lower() or password == password.upper():
-            return render_template("error.html", error="Salasanan pitää sisältää pieniä ja suuria kirjaimia.")
-        hash_value = generate_password_hash(password)
-        sql = "INSERT INTO users (username, password, role, visible) VALUES (:username, :hash_value, 0, 1)"
-        try:
-            db.session.execute(sql, {"username":username, "hash_value":hash_value})
-        except:
-            return render_template("error.html", error="Käyttäjätunnus varattu.")
-        db.session.commit()
+        password_2 = request.form["password_check"]
+        check_ok, msg = users.check_username_password(username, password, password_2)
+        if not check_ok:
+            return render_template("error.html", error=msg)
+        create_ok, msg = users.create_user(username, password)
+        if not create_ok:
+            return render_template("error.html", error=msg)
         return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -226,21 +212,14 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        sql = "SELECT password, visible FROM users WHERE username=:username"
-        result = db.session.execute(sql, {"username":username}).fetchone()
-        if result == None or result[1] == 0:
-            return render_template("error.html", error="Käyttäjätunnusta ei löytynyt.")
-        hash_value = result[0]
-        if check_password_hash(hash_value, password):
-            session["username"] = username
-            session["csrf_token"] = urandom(16).hex()
+        check_ok, msg = users.check_login(username, password)
+        if check_ok:
             return redirect("/")
-        return render_template("error.html", error="Väärä salasana.")
+        return render_template("error.html", error=msg)
 
 @app.route("/logout")
 def logout():
-    del session["username"]
-    del session["csrf_token"]
+    users.logout()
     return redirect("/")
 
 def get_user_id():
