@@ -36,10 +36,23 @@ def check_login(username, password):
     hash_value = result[0]
     if check_password_hash(hash_value, password):
         session["username"] = username
+        user_id = get_user_id(username)
+        session["user_id"] = user_id
         session["csrf_token"] = urandom(16).hex()
         return True, ""
     return False, "Väärä salasana."
 
 def logout():
     del session["username"]
+    del session["user_id"]
     del session["csrf_token"]
+
+def get_user_id(username):
+    sql = "SELECT id FROM users WHERE username=:username"
+    user_id = db.session.execute(sql, {"username":username}).fetchone()[0]
+    return user_id
+
+def get_username(user_id):
+    sql = "SELECT username FROM users WHERE id=:user_id"
+    username = db.session.execute(sql, {"user_id":user_id}).fetchone()[0]
+    return username

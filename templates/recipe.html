@@ -14,7 +14,6 @@
     <form action="/delete-recipe" method="POST">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
-      <input type="hidden" name="creator_id" value="{{ recipe[1] }}">
       <input type="submit" onclick="return confirm('Haluatko varmasti poistaa reseptin?');" value="Poista">
     </form>
     <form action="/modify-recipe" method="POST">
