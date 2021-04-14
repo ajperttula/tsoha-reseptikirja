@@ -13,15 +13,15 @@
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <p>
         Otsikko: <br>
-        <input type="text" name="title" size="50" maxlength="50">
+        <input type="text" name="title" placeholder="Lisää otsikko" size="50" maxlength="50">
       </p>
       <p>
         Kuvaus: <br>
-        <textarea name="description" rows="3" cols="40" maxlength="200"></textarea>
+        <textarea name="description" rows="3" cols="40" placeholder="Kuvaile reseptiä lyhyesti" maxlength="200"></textarea>
       </p>
       <p>
         Ainesosat: <br>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
+        <p><input type="text" name="ingredient" size="50" placeholder="Esim. 1 dl kermaa" maxlength="100"></p>
         <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
         <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
         <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
