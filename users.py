@@ -3,6 +3,7 @@ from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
 from os import urandom
 
+
 def check_username_password(username, password, password_2):
     if len(username) < 3:
         return False, "Antamasi käyttäjätunnus on liian lyhyt."
@@ -18,19 +19,25 @@ def check_username_password(username, password, password_2):
         return False, "Salasanan pitää sisältää pieniä ja suuria kirjaimia."
     return True, ""
 
+
 def create_user(username, password):
     hash_value = generate_password_hash(password)
-    sql = "INSERT INTO users (username, password, role, visible) VALUES (:username, :hash_value, 0, 1)"
+    sql = """INSERT INTO users (username, password, role, visible) 
+             VALUES (:username, :hash_value, 0, 1)"""
     try:
-        db.session.execute(sql, {"username":username, "hash_value":hash_value})
+        db.session.execute(
+            sql, {"username": username, "hash_value": hash_value})
     except:
         return False, "Käyttäjätunnus on varattu."
     db.session.commit()
     return True, ""
 
+
 def check_login(username, password):
-    sql = "SELECT password, visible FROM users WHERE username=:username"
-    result = db.session.execute(sql, {"username":username}).fetchone()
+    sql = """SELECT password, visible 
+             FROM users 
+             WHERE username=:username"""
+    result = db.session.execute(sql, {"username": username}).fetchone()
     if result == None or result[1] == 0:
         return False, "Käyttäjätunnusta ei löytynyt."
     hash_value = result[0]
@@ -42,17 +49,24 @@ def check_login(username, password):
         return True, ""
     return False, "Väärä salasana."
 
+
 def logout():
     del session["username"]
     del session["user_id"]
     del session["csrf_token"]
 
+
 def get_user_id(username):
-    sql = "SELECT id FROM users WHERE username=:username"
-    user_id = db.session.execute(sql, {"username":username}).fetchone()[0]
+    sql = """SELECT id 
+             FROM users 
+             WHERE username=:username"""
+    user_id = db.session.execute(sql, {"username": username}).fetchone()[0]
     return user_id
 
+
 def get_username(user_id):
-    sql = "SELECT username FROM users WHERE id=:user_id"
-    username = db.session.execute(sql, {"user_id":user_id}).fetchone()[0]
+    sql = """SELECT username 
+             FROM users 
+             WHERE id=:user_id"""
+    username = db.session.execute(sql, {"user_id": user_id}).fetchone()[0]
     return username

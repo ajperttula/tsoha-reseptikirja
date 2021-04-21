@@ -5,16 +5,19 @@ import users
 import recipes
 import reviews
 
+
 @app.route("/")
 def index():
     list = recipes.list_recipes()
     return render_template("index.html", recipes=list)
+
 
 @app.route("/search")
 def search():
     keyword = request.args["keyword"]
     results = recipes.search(keyword)
     return render_template("result.html", results=results)
+
 
 @app.route("/recipe/<int:id>")
 def recipe(id):
@@ -27,7 +30,8 @@ def recipe(id):
     own_recipe = recipes.is_own_recipe(recipe[1])
     comments = reviews.get_comments(id)
     return render_template("recipe.html", creator=creator, recipe=recipe, tags=tags,
-                            ingredients=ingredients, comments=comments, own_recipe=own_recipe)
+                           ingredients=ingredients, comments=comments, own_recipe=own_recipe)
+
 
 @app.route("/add-recipe", methods=["GET", "POST"])
 def add_recipe():
@@ -41,10 +45,12 @@ def add_recipe():
         instruction = request.form["instruction"]
         ingredients = request.form.getlist("ingredient")
         tags = request.form.getlist("tag")
-        add_ok, msg, recipe_id = recipes.add_recipe(title, description, instruction, ingredients, tags)
+        add_ok, msg, recipe_id = recipes.add_recipe(title, description,
+                                                    instruction, ingredients, tags)
         if not add_ok:
             return render_template("error.html", error=msg)
         return redirect(f"/recipe/{recipe_id}")
+
 
 @app.route("/modify-recipe", methods=["POST"])
 def modify_recipe():
@@ -57,7 +63,8 @@ def modify_recipe():
     recipetags = request.form.getlist("recipetag")
     tags = recipes.list_tags()
     return render_template("modify-recipe.html", recipe_id=recipe_id, title=title, description=description,
-                            ingredients=ingredients, instruction=instruction, tags=tags, recipetags=recipetags)
+                           ingredients=ingredients, instruction=instruction, tags=tags, recipetags=recipetags)
+
 
 @app.route("/execute-modification", methods=["POST"])
 def execute_modification():
@@ -68,10 +75,12 @@ def execute_modification():
     instruction = request.form["instruction"]
     ingredients = request.form.getlist("ingredient")
     tags = request.form.getlist("tag")
-    modify_ok, msg = recipes.modify_recipe(recipe_id, title, description, instruction, ingredients, tags)
+    modify_ok, msg = recipes.modify_recipe(recipe_id, title, description,
+                                           instruction, ingredients, tags)
     if not modify_ok:
         return render_template("error.html", error=msg)
     return redirect(f"/recipe/{recipe_id}")
+
 
 @app.route("/grade-recipe", methods=["POST"])
 def grade_recipe():
@@ -80,6 +89,7 @@ def grade_recipe():
     grade = request.form["grade"]
     reviews.grade_recipe(recipe_id, grade)
     return redirect(f"recipe/{recipe_id}")
+
 
 @app.route("/add-comment", methods=["POST"])
 def add_comment():
@@ -92,6 +102,7 @@ def add_comment():
         return render_template("error.html", error=msg)
     return redirect(f"recipe/{recipe_id}")
 
+
 @app.route("/delete-recipe", methods=["POST"])
 def delete_recipe():
     csrf_check(request.form["csrf_token"])
@@ -99,6 +110,7 @@ def delete_recipe():
     recipes.delete_recipe(recipe_id)
     reviews.delete_reviews(recipe_id)
     return redirect("/")
+
 
 @app.route("/create-user", methods=["GET", "POST"])
 def create_user():
@@ -108,13 +120,18 @@ def create_user():
         username = request.form["username"]
         password = request.form["password"]
         password_2 = request.form["password_check"]
-        check_ok, msg = users.check_username_password(username, password, password_2)
+        check_ok, msg = users.check_username_password(
+            username,
+            password,
+            password_2
+        )
         if not check_ok:
             return render_template("error.html", error=msg)
         create_ok, msg = users.create_user(username, password)
         if not create_ok:
             return render_template("error.html", error=msg)
         return redirect("/")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -128,10 +145,12 @@ def login():
             return redirect("/")
         return render_template("error.html", error=msg)
 
+
 @app.route("/logout")
 def logout():
     users.logout()
     return redirect("/")
+
 
 def csrf_check(token):
     if session["csrf_token"] != token:
