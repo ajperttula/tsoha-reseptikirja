@@ -1,116 +1,106 @@
-<!DOCTYPE html>
-<html lang="fi">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../static/style.css">
-  {% extends "layout.html" %}
-  {% block title %}{{ recipe[3] }}{% endblock %}
-</head>
-<body>
-  {% block content %}
-  <div class="content">
-    <h2>{{ recipe[3] }}</h2>
-    <p>
-      {{ average }}
-    </p>
-    <p>
-      Reseptin lisäsi: {{ creator }} - {{ recipe[2].strftime("%d-%m-%Y") }}
-      {% if own_recipe %}
-      <form action="/delete-recipe" method="POST">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
-        <input type="submit" onclick="return confirm('Haluatko varmasti poistaa reseptin?');" value="Poista">
-      </form>
-      <form action="/modify-recipe" method="POST">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
-        <input type="hidden" name="title" value="{{ recipe[3] }}">
-        <input type="hidden" name="description" value="{{ recipe[4] }}">
-        <input type="hidden" name="instruction" value="{{ recipe[5] }}">
-        {% for i in ingredients %}
-        <input type="hidden" name="ingredient" value="{{ i[0] }}">
-        {% endfor %}
-        {% for t in tags %}
-        <input type="hidden" name="recipetag" value="{{ t[0] }}">
-        {% endfor %}
-        <input type="submit" value="Muokkaa">
-      </form>
-      {% endif %}
-    </p>
-    {% if session.username %}
-    <p>
-      Arvostele resepti: <br>
-      <form action="/grade-recipe" method="POST">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
-        <select name="grade">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5" selected>5</option>
-        </select>
-        <input type="submit" value="Lähetä">
-      </form>
-    </p>
-    {% endif %}
-    <p>
-      {% for t in tags %}
-      {{ t[0] }} 
+{% extends "layout.html" %}
+{% block title %}{{ recipe[3] }}{% endblock %}
+{% block content %}
+<div class="content">
+  <h2>{{ recipe[3] }}</h2>
+  <p>
+    {{ average }}
+  </p>
+  <p>
+    Reseptin lisäsi: {{ creator }} - {{ recipe[2].strftime("%d-%m-%Y") }}
+    {% if own_recipe %}
+    <form action="/delete-recipe" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
+      <input type="submit" onclick="return confirm('Haluatko varmasti poistaa reseptin?');" value="Poista">
+    </form>
+    <form action="/modify-recipe" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
+      <input type="hidden" name="title" value="{{ recipe[3] }}">
+      <input type="hidden" name="description" value="{{ recipe[4] }}">
+      <input type="hidden" name="instruction" value="{{ recipe[5] }}">
+      {% for i in ingredients %}
+      <input type="hidden" name="ingredient" value="{{ i[0] }}">
       {% endfor %}
-    </p>
-    <p>
-      {{ recipe[4] }}
-    </p>
-    <p>
-      <ul>
-        {% for i in ingredients %}
-        <li>{{ i[0] }}</li>
-        {% endfor %}
-      </ul>
-    </p>
-    <p>
-      {{ recipe[5] }}
-    </p>
-    <hr>
-    <h3>Kommentit</h3>
-    {% for c in comments %}
-    <div class="comment">
-      {{ c[0] }} &nbsp; - &nbsp; {{ c[2].strftime("%d-%m-%Y %H:%M") }} <br>
-      <p>
-        {{ c[1] }}
-      </p>
-    </div>
-    {% endfor %}
-    {% if session.username %}
-    <p>
-      Lisää kommentti (max. 1000 merkkiä): <br>
-      <form action="/add-comment" method="POST" onsubmit="return check(this)">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
-        <textarea name="comment" rows="5" cols="40" maxlength="1000"></textarea> <br>
-        <input type="submit" value="Lisää" style="margin-top: 5px;">
-      </form>
-    </p>
-    {% else %}
-    <p>
-      Kirjaudu sisään kommentoidaksesi.
-    </p>
+      {% for t in tags %}
+      <input type="hidden" name="recipetag" value="{{ t[0] }}">
+      {% endfor %}
+      <input type="submit" value="Muokkaa">
+    </form>
     {% endif %}
+  </p>
+  {% if session.username %}
+  <p>
+    Arvostele resepti: <br>
+    <form action="/grade-recipe" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
+      <select name="grade">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5" selected>5</option>
+      </select>
+      <input type="submit" value="Lähetä">
+    </form>
+  </p>
+  {% endif %}
+  <p>
+    {% for t in tags %}
+    {{ t[0] }} 
+    {% endfor %}
+  </p>
+  <p>
+    {{ recipe[4] }}
+  </p>
+  <p>
+    <ul>
+      {% for i in ingredients %}
+      <li>{{ i[0] }}</li>
+      {% endfor %}
+    </ul>
+  </p>
+  <p>
+    {{ recipe[5] }}
+  </p>
+  <hr>
+  <h3>Kommentit</h3>
+  {% for c in comments %}
+  <div class="comment">
+    {{ c[0] }} &nbsp; - &nbsp; {{ c[2].strftime("%d-%m-%Y %H:%M") }} <br>
+    <p>
+      {{ c[1] }}
+    </p>
   </div>
-  {% endblock %}
-  <script>
-    function check(form) {
-      if (form.comment.value.length > 1000) {
-        alert("Kommentti on liian pitkä.");
-      } else if (form.comment.value.length == 0) {
-        alert("Kommentti on tyhjä.");
-      } else {
-        return true;
-      }
-      return false;
+  {% endfor %}
+  {% if session.username %}
+  <p>
+    Lisää kommentti (max. 1000 merkkiä): <br>
+    <form action="/add-comment" method="POST" onsubmit="return check(this)">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
+      <textarea name="comment" rows="5" cols="40" maxlength="1000"></textarea> <br>
+      <input type="submit" value="Lisää" style="margin-top: 5px;">
+    </form>
+  </p>
+  {% else %}
+  <p>
+    Kirjaudu sisään kommentoidaksesi.
+  </p>
+  {% endif %}
+</div>
+<script>
+  function check(form) {
+    if (form.comment.value.length > 1000) {
+      alert("Kommentti on liian pitkä.");
+    } else if (form.comment.value.length == 0) {
+      alert("Kommentti on tyhjä.");
+    } else {
+      return true;
     }
-  </script>
-</body>
-</html>
+    return false;
+  }
+</script>
+{% endblock %}

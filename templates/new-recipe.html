@@ -1,67 +1,57 @@
-<!DOCTYPE html>
-<html lang="fi">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="static/style.css">
-  {% extends "layout.html" %}
-  {% block title %}Lisää resepti{% endblock %}
-</head>
-<body>
-  {% block content %}
-  <div class="content">
-    <h2>Lisää uusi resepti</h2>
-    <form action="/add-recipe" method="POST" onsubmit="return check(this)">
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-      Otsikko: <br>
-      <p>
-        <input class="recipe" type="text" name="title" id="title" placeholder="Lisää otsikko" size="50" maxlength="50">
-      </p>
-      Kuvaus: <br>
-      <p>
-        <textarea name="description" rows="3" cols="40" placeholder="Kuvaile reseptiä lyhyesti" maxlength="200"></textarea>
-      </p>
-      Ainesosat: <br>
-      <p>
-        <input class="recipe" type="text" name="ingredient" size="50" placeholder="Esim. 1 dl kermaa" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
-      </p>
-      Ohje: <br>
-      <p>
-        <textarea name="instruction" rows="6" cols="40" maxlength="2000"></textarea>
-      </p>
-      Tagit: <br>
-      <p>
-        {% for t in tags %}
-        <input type="checkbox" name="tag" value="{{ t[0] }}"> {{ t[1] }}
-        {% endfor %}
-      </p>
-      <input type="submit" value="Lisää">
-    </form>
-  </div>
-  {% endblock %}
-  <script>
-    function check(form) {
-      if (form.title.value.length == 0) {
-        alert("Anna reseptille otsikko.");
-      } else if (form.title.value.length > 50) {
-        alert("Otsikon maksimipituus on 50 merkkiä.");
-      } else if (form.description.value.length > 200) {
-        alert("Kuvauksen maksimipituus on 200 merkkiä.");
-      } else if (form.instruction.value.length > 2000) {
-        alert("Ohjeen maksimipituus on 2000 merkkiä.");
-      } else {
-        return true;
-      }
-      return false;
+{% extends "layout.html" %}
+{% block title %}Lisää resepti{% endblock %}
+{% block content %}
+<div class="content">
+  <h2>Lisää uusi resepti</h2>
+  <form action="/add-recipe" method="POST" onsubmit="return check(this)">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    Otsikko: <br>
+    <p>
+      <input class="recipe" type="text" name="title" id="title" placeholder="Lisää otsikko" maxlength="50">
+    </p>
+    Kuvaus: <br>
+    <p>
+      <textarea name="description" placeholder="Kuvaile reseptiä lyhyesti" maxlength="200"></textarea>
+    </p>
+    Ainesosat: <br>
+    <p>
+      <input class="recipe" type="text" name="ingredient" placeholder="Esim. 1 dl kermaa" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" maxlength="100">
+    </p>
+    Ohje: <br>
+    <p>
+      <textarea name="instruction" maxlength="2000"></textarea>
+    </p>
+    Tagit: <br>
+    <p>
+      {% for t in tags %}
+      <input type="checkbox" name="tag" value="{{ t[0] }}"> {{ t[1] }}
+      {% endfor %}
+    </p>
+    <input type="submit" value="Lisää">
+  </form>
+</div>
+<script>
+  function check(form) {
+    if (form.title.value.length == 0) {
+      alert("Anna reseptille otsikko.");
+    } else if (form.title.value.length > 50) {
+      alert("Otsikon maksimipituus on 50 merkkiä.");
+    } else if (form.description.value.length > 200) {
+      alert("Kuvauksen maksimipituus on 200 merkkiä.");
+    } else if (form.instruction.value.length > 2000) {
+      alert("Ohjeen maksimipituus on 2000 merkkiä.");
+    } else {
+      return true;
     }
-  </script>
-</body>
-</html>
+    return false;
+  }
+</script>
+{% endblock %}
