@@ -53,5 +53,6 @@ CREATE TABLE grades (
 CREATE TABLE favourites (
     user_id INTEGER REFERENCES users,
     recipe_id INTEGER REFERENCES recipes,
+    added TIMESTAMP,
     visible INTEGER
 );

@@ -64,7 +64,8 @@ def list_favourites(user_id):
              FROM recipes R, favourites F 
              WHERE F.user_id=:user_id 
              AND F.recipe_id=R.id
-             AND F.visible=1"""
+             AND F.visible=1
+             ORDER BY F.added DESC"""
     recipes = db.session.execute(sql, {"user_id": user_id}).fetchall()
     return recipes
 
@@ -82,12 +83,13 @@ def add_favourite(recipe_id):
     user_id = session["user_id"]
     if check_old_favourite():
         sql = """UPDATE favourites 
-                 SET visible=1 
+                 SET visible=1, 
+                 added=NOW() 
                  WHERE user_id=:user_id 
                  AND recipe_id=:recipe_id"""
     else:
-        sql = """INSERT INTO favourites (user_id, recipe_id, visible) 
-                 VALUES (:user_id, :recipe_id, 1)"""
+        sql = """INSERT INTO favourites (user_id, recipe_id, added, visible) 
+                 VALUES (:user_id, :recipe_id, NOW(), 1)"""
     db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
     db.session.commit()
 
@@ -261,6 +263,11 @@ def delete_recipe(recipe_id):
     db.session.execute(sql, {"recipe_id": recipe_id})
 
     sql = """UPDATE recipetags 
+             SET visible=0 
+             WHERE recipe_id=:recipe_id"""
+    db.session.execute(sql, {"recipe_id": recipe_id})
+
+    sql = """UPDATE favourites 
              SET visible=0 
              WHERE recipe_id=:recipe_id"""
     db.session.execute(sql, {"recipe_id": recipe_id})
