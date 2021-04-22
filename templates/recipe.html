@@ -12,6 +12,9 @@
   <div class="content">
     <h2>{{ recipe[3] }}</h2>
     <p>
+      {{ average }}
+    </p>
+    <p>
       Reseptin lisäsi: {{ creator }} - {{ recipe[2].strftime("%d-%m-%Y") }}
       {% if own_recipe %}
       <form action="/delete-recipe" method="POST">

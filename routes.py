@@ -28,9 +28,11 @@ def recipe(id):
     ingredients = recipes.get_recipe_ingredients(id)
     tags = recipes.get_recipe_tags(id)
     own_recipe = recipes.is_own_recipe(recipe[1])
+    average = reviews.get_average(id)
     comments = reviews.get_comments(id)
     return render_template("recipe.html", creator=creator, recipe=recipe, tags=tags,
-                           ingredients=ingredients, comments=comments, own_recipe=own_recipe)
+                           ingredients=ingredients, comments=comments, 
+                           own_recipe=own_recipe, average=average)
 
 
 @app.route("/add-recipe", methods=["GET", "POST"])

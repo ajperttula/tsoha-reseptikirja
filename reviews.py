@@ -42,6 +42,13 @@ def grade_recipe(recipe_id, grade):
     db.session.execute(sql, {"recipe_id": recipe_id, "grade": grade})
     db.session.commit()
 
+def get_average(recipe_id):
+    sql = """SELECT ROUND(AVG(grade), 1) 
+             FROM grades 
+             WHERE recipe_id=:recipe_id;"""
+    average = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
+    return average
+
 
 def check_comment(comment):
     if len(comment) == 0:
