@@ -1,39 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/style.css">
   {% extends "layout.html" %}
   {% block title %}Muokkaa reseptiä{% endblock %}
 </head>
 <body>
   {% block content %}
-  <h2>Muokkaa reseptiä</h2>
-  <p>
+  <div class="content">
+    <h2>Muokkaa reseptiä</h2>
     <form action="/execute-modification" method="POST" onsubmit="return check(this)">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+      Otsikko: <br>
       <p>
-        Otsikko: <br>
-        <input type="text" name="title" value="{{ title }}" size="50" maxlength="50">
+        <input class="recipe" type="text" name="title" value="{{ title }}" width="300px" maxlength="50">
       </p>
+      Kuvaus: <br>
       <p>
-        Kuvaus: <br>
-        <textarea name="description" rows="3" cols="40" maxlength="200">{{ description }}</textarea>
+        <textarea name="description" maxlength="200">{{ description }}</textarea>
       </p>
+      Ainesosat ja määrät: <br>
       <p>
-        Ainesosat ja määrät: <br>
         {% for i in ingredients %}
-        <p><input type="text" name="ingredient" value="{{ i }}"size="50" maxlength="100"></p>
+        <input class="recipe" type="text" name="ingredient" value="{{ i }}"size="50" maxlength="100">
         {% endfor %}
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
       </p>
+      Ohje: <br>
       <p>
-        Ohje: <br>
         <textarea name="instruction" rows="6" cols="40" maxlength="2000">{{ instruction }}</textarea>
       </p>
+      Tagit: <br>
       <p>
-        Tagit: <br>
         {% for t in tags %}
         {% if t[1] in recipetags %}
         <input type="checkbox" name="tag" value="{{ t[0] }}" checked> {{ t[1] }}
@@ -45,7 +47,8 @@
       <input type="submit" value="Tallenna">
       <a href="/recipe/{{ recipe_id }}"><button type="button">Peruuta</button></a>
     </form>
-  </p>
+  </div>
+  {% endblock %}
   <script>
     function check(form) {
       if (form.title.value.length == 0) {
@@ -62,6 +65,5 @@
       return false;
     }
   </script>
-  {% endblock %}
 </body>
 </html>

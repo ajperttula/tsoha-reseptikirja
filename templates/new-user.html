@@ -1,32 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/style.css">
   {% extends "layout.html" %}
   {% block title %}Luo tunnus{% endblock %}
 </head>
 <body>
   {% block content %}
-  <h2>Luo käyttäjätunnus</h2>
-  <p>
-    Käyttäjätunnuksen on oltava 3-20 merkkiä pitkä. 
-    Salasanan on oltava vähintään 8-32 merkkiä pitkä ja 
-    sen pitää sisältää sekä pieniä että isoja kirjaimia.
-  </p>
-  <form action="/create-user" method="POST" onsubmit="return check(this)">
+  <div class="content">
+    <h2>Luo käyttäjätunnus</h2>
     <p>
-      <input type="text" name="username" placeholder="Käyttäjätunnus" minlength="3" maxlength="20">
+      Käyttäjätunnuksen on oltava 3-20 merkkiä pitkä. 
+      Salasanan on oltava 8-32 merkkiä pitkä ja 
+      sen pitää sisältää sekä pieniä että isoja kirjaimia.
     </p>
-    <p>
-      <input type="password" name="password" placeholder="Salasana" minlength="8", maxlength="32">
-    </p>
-    <p>
-      <input type="password" name="password_check" placeholder="Salasana uudelleen" minlength="8", maxlength="32">
-    </p>
-    <p>
+    <form action="/create-user" method="POST" onsubmit="return check(this)">
+      <input type="text" name="username" placeholder="Käyttäjätunnus" minlength="3" maxlength="20"> <br>
+      <input type="password" name="password" placeholder="Salasana" minlength="8", maxlength="32"> <br>
+      <input type="password" name="password_check" placeholder="Salasana uudelleen" minlength="8", maxlength="32"> <br>
       <input type="submit" value="Luo tunnus">
-    </p>
-  </form>
+    </form>
+  </div>
+  {% endblock %}
   <script>
     function check(form) {
       if (form.username.value.length < 3) {
@@ -47,6 +44,5 @@
       return false;
     }
   </script>
-  {% endblock %}
 </body>
 </html>

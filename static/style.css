@@ -1,0 +1,106 @@
+@charset "UTF-8";
+
+body {
+    margin: auto;
+    max-width: 40em;
+    font-family: "Times New Roman", Georgia, Serif;
+    background-color: rgb(231, 208, 173);
+}
+
+.content {
+    background-color: white;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 5px;
+    padding-bottom: 20px;
+}
+
+.top {
+    background-color: white;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-family: "Playfair Display";
+    letter-spacing: 5px;
+    font-size: 4em;
+    padding-left: 14px;
+    margin-bottom: 8px;
+    background-color: white;
+}
+
+h2 {
+    font-family: "Playfair Display";
+    letter-spacing: 3px;
+}
+
+h3 {
+    font-family: "Playfair Display";
+    letter-spacing: 1.5px;
+}
+
+a.nav:link {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 14px;
+    display: inline-block;
+}
+
+a.nav:visited {
+    color: black;
+}
+
+a.nav:hover {
+    background-color:gainsboro;
+    border-radius: 3px;
+}
+
+a:link {
+    color: black;
+    text-decoration: none;
+}
+
+a:visited {
+    color: black;
+}
+
+a:hover {
+    color: rgb(95, 95, 95);
+}
+
+form.nav {
+    display: block;
+    float: right;
+    padding: 8px 14px;
+}
+
+::placeholder {
+    font-family: "Times New Roman", Georgia, Serif;
+}
+
+input {
+    margin-bottom: 8px;
+    font-family: "Times New Roman", Georgia, Serif;
+}
+
+input.recipe {
+    width: 300px;
+}
+
+textarea {
+    font-family: "Times New Roman", Georgia, Serif;
+    width: 300px;
+    height: 100px;
+    resize: vertical;
+}
+
+.comment {
+    padding: 8px 14px;
+    background-color: rgb(221, 221, 221);
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}

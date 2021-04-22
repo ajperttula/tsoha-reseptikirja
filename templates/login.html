@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/style.css">
   {% extends "layout.html" %}
   {% block title %}Kirjaudu sisään{% endblock %}
 </head>
 <body>
   {% block content %}
- <h2>Kirjaudu sisään</h2>
- <p>
-  <form action="/login" method="POST" onsubmit="return check(this)">
-    <p>
-      <input type="text" name="username" placeholder="Käyttäjätunnus" minlength="3" maxlength="20">
-    </p>
-    <p>
-      <input type="password" name="password" placeholder="Salasana" minlength="8", maxlength="32">
-    </p>
-    <input type="submit" value="Kirjaudu">
-  </form>
- </p>
- <script>
-   function check(form) {
-     if (form.username.value.length == 0 || form.password.value.length == 0) {
-       alert("Tarkista käyttäjätunnus ja salasana");
-     } else {
-       return true;
-     }
-     return false;
-   }
- </script>
- {% endblock %}
+  <div class="content">
+    <h2>Kirjaudu sisään</h2>
+    <form action="/login" method="POST" onsubmit="return check(this)">
+      <input type="text" name="username" placeholder="Käyttäjätunnus" minlength="3" maxlength="20"> <br>
+      <input type="password" name="password" placeholder="Salasana" minlength="8", maxlength="32"> <br>
+      <input type="submit" value="Kirjaudu">
+    </form>
+  </div>
+  {% endblock %}
+  <script>
+    function check(form) {
+      if (form.username.value.length == 0 || form.password.value.length == 0) {
+        alert("Tarkista käyttäjätunnus ja salasana");
+      } else {
+        return true;
+      }
+      return false;
+    }
+  </script>
 </body>
 </html>

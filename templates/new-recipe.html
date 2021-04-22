@@ -1,49 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/style.css">
   {% extends "layout.html" %}
   {% block title %}Lisää resepti{% endblock %}
 </head>
 <body>
   {% block content %}
-  <h2>Lisää uusi resepti</h2>
-  <p>
+  <div class="content">
+    <h2>Lisää uusi resepti</h2>
     <form action="/add-recipe" method="POST" onsubmit="return check(this)">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      Otsikko: <br>
       <p>
-        Otsikko: <br>
-        <input type="text" name="title" placeholder="Lisää otsikko" size="50" maxlength="50">
+        <input class="recipe" type="text" name="title" id="title" placeholder="Lisää otsikko" size="50" maxlength="50">
       </p>
+      Kuvaus: <br>
       <p>
-        Kuvaus: <br>
         <textarea name="description" rows="3" cols="40" placeholder="Kuvaile reseptiä lyhyesti" maxlength="200"></textarea>
       </p>
+      Ainesosat: <br>
       <p>
-        Ainesosat: <br>
-        <p><input type="text" name="ingredient" size="50" placeholder="Esim. 1 dl kermaa" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
-        <p><input type="text" name="ingredient" size="50" maxlength="100"></p>
+        <input class="recipe" type="text" name="ingredient" size="50" placeholder="Esim. 1 dl kermaa" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
+        <input class="recipe" type="text" name="ingredient" size="50" maxlength="100">
       </p>
+      Ohje: <br>
       <p>
-        Ohje: <br>
         <textarea name="instruction" rows="6" cols="40" maxlength="2000"></textarea>
       </p>
+      Tagit: <br>
       <p>
-        Tagit: <br>
         {% for t in tags %}
         <input type="checkbox" name="tag" value="{{ t[0] }}"> {{ t[1] }}
         {% endfor %}
       </p>
       <input type="submit" value="Lisää">
     </form>
-  </p>
+  </div>
+  {% endblock %}
   <script>
     function check(form) {
       if (form.title.value.length == 0) {
@@ -60,6 +63,5 @@
       return false;
     }
   </script>
-  {% endblock %}
 </body>
 </html>

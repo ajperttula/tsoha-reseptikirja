@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/style.css">
   {% extends "layout.html" %}
   {% block title %}Haku{% endblock %}
 </head>
 <body>
   {% block content %}
-  <h2>Haun tulokset</h2>
-  <p>
-    {% for r in results %}
-    <a href="/recipe/{{ r[0] }}">{{ r[1] }}</a> <br>
-    {% endfor %}
-  </p>
+  <div class="content">
+    <h2>Haun tulokset</h2>
+    <p>
+      {% for r in results %}
+      <a href="/recipe/{{ r[0] }}">{{ r[1] }}</a> <br>
+      {% endfor %}
+    </p>
+  </div>
   {% endblock %}
 </body>
 </html>
