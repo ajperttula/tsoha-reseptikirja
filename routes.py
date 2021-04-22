@@ -28,11 +28,12 @@ def recipe(id):
     ingredients = recipes.get_recipe_ingredients(id)
     tags = recipes.get_recipe_tags(id)
     own_recipe = recipes.is_own_recipe(recipe[1])
+    favourite = recipes.is_favourite(id)
     average = reviews.get_average(id)
     comments = reviews.get_comments(id)
     return render_template("recipe.html", creator=creator, recipe=recipe, tags=tags,
                            ingredients=ingredients, comments=comments, 
-                           own_recipe=own_recipe, average=average)
+                           own_recipe=own_recipe, average=average, favourite=favourite)
 
 
 @app.route("/add-recipe", methods=["GET", "POST"])
@@ -81,6 +82,22 @@ def execute_modification():
                                            instruction, ingredients, tags)
     if not modify_ok:
         return render_template("error.html", error=msg)
+    return redirect(f"/recipe/{recipe_id}")
+
+
+@app.route("/add-favourite", methods=["POST"])
+def add_favourite():
+    csrf_check(request.form["csrf_token"])
+    recipe_id = request.form["recipe_id"]
+    recipes.add_favourite(recipe_id)
+    return redirect(f"/recipe/{recipe_id}")
+
+
+@app.route("/delete-favourite", methods=["POST"])
+def delete_favourite():
+    csrf_check(request.form["csrf_token"])
+    recipe_id = request.form["recipe_id"]
+    recipes.delete_favourite(recipe_id)
     return redirect(f"/recipe/{recipe_id}")
 
 
@@ -140,8 +157,9 @@ def profile(id):
     check_ok, msg = users.is_own_profile(id)
     if not check_ok:
         return render_template("error.html", error=msg)
-    list = recipes.list_own_recipes(id)
-    return render_template("profile.html", recipes=list)
+    own_recipes = recipes.list_own_recipes(id)
+    favourites = recipes.list_favourites(id)
+    return render_template("profile.html", recipes=own_recipes, favourites=favourites)
 
 
 @app.route("/login", methods=["GET", "POST"])

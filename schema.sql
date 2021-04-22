@@ -49,3 +49,9 @@ CREATE TABLE grades (
     grade INTEGER,
     visible INTEGER
 );
+
+CREATE TABLE favourites (
+    user_id INTEGER REFERENCES users,
+    recipe_id INTEGER REFERENCES recipes,
+    visible INTEGER
+);

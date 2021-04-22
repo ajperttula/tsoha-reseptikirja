@@ -42,6 +42,66 @@ def search(keyword):
     return results
 
 
+def is_favourite(recipe_id):
+    try:
+        user_id = session["user_id"]
+        sql = """SELECT COUNT(*) 
+                FROM favourites 
+                WHERE user_id=:user_id 
+                AND recipe_id=:recipe_id 
+                AND visible=1"""
+        result = db.session.execute(
+            sql, {"user_id": user_id, "recipe_id": recipe_id}).fetchone()[0]
+        if result:
+            return True
+        return False
+    except:
+        return False
+
+
+def list_favourites(user_id):
+    sql = """SELECT R.id, R.title 
+             FROM recipes R, favourites F 
+             WHERE F.user_id=:user_id 
+             AND F.recipe_id=R.id
+             AND F.visible=1"""
+    recipes = db.session.execute(sql, {"user_id": user_id}).fetchall()
+    return recipes
+
+def add_favourite(recipe_id):
+    def check_old_favourite():
+        sql = """SELECT COUNT(*) 
+                 FROM favourites 
+                 WHERE user_id=:user_id 
+                 AND recipe_id=:recipe_id 
+                 AND visible=0"""
+        result = db.session.execute(
+            sql, {"user_id": user_id, "recipe_id": recipe_id}).fetchone()[0]
+        return result
+
+    user_id = session["user_id"]
+    if check_old_favourite():
+        sql = """UPDATE favourites 
+                 SET visible=1 
+                 WHERE user_id=:user_id 
+                 AND recipe_id=:recipe_id"""
+    else:
+        sql = """INSERT INTO favourites (user_id, recipe_id, visible) 
+                 VALUES (:user_id, :recipe_id, 1)"""
+    db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
+    db.session.commit()
+
+
+def delete_favourite(recipe_id):
+    user_id = session["user_id"]
+    sql = """UPDATE favourites 
+             SET visible=0 
+             WHERE user_id=:user_id 
+             AND recipe_id=:recipe_id"""
+    db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
+    db.session.commit()
+
+
 def get_recipe(recipe_id):
     visible, msg = is_visible(recipe_id)
     if not visible:
@@ -237,7 +297,8 @@ def title_taken(title, recipe_id):
              WHERE title=:title 
              AND visible=1 
              AND id<>:recipe_id"""
-    result = db.session.execute(sql, {"title": title, "recipe_id": recipe_id}).fetchone()[0]
+    result = db.session.execute(
+        sql, {"title": title, "recipe_id": recipe_id}).fetchone()[0]
     return result
 
 

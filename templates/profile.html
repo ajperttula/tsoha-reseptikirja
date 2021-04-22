@@ -9,5 +9,10 @@
     {% endfor %}
   </p>
   <h2>Suosikit</h2>
+  <p>
+    {% for f in favourites %}
+    <a href="/recipe/{{ f[0] }}">{{ f[1] }}</a> <br>
+    {% endfor %}
+  </p>
 </div>
 {% endblock %}
