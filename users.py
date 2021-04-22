@@ -70,3 +70,13 @@ def get_username(user_id):
              WHERE id=:user_id"""
     username = db.session.execute(sql, {"user_id": user_id}).fetchone()[0]
     return username
+
+
+def is_own_profile(id):
+    try:
+        if id == session["user_id"]:
+            return True,""
+        else:
+            return False, "Pääsy evätty."
+    except:
+        return False, "Pääsy evätty."

@@ -135,6 +135,15 @@ def create_user():
         return redirect("/")
 
 
+@app.route("/profile/<int:id>")
+def profile(id):
+    check_ok, msg = users.is_own_profile(id)
+    if not check_ok:
+        return render_template("error.html", error=msg)
+    list = recipes.list_own_recipes(id)
+    return render_template("profile.html", recipes=list)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":

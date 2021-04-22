@@ -11,6 +11,16 @@ def list_recipes():
     return recipes
 
 
+def list_own_recipes(id):
+    sql = """SELECT id, title 
+             FROM recipes 
+             WHERE creator_id=:id
+             AND visible=1
+             ORDER BY id DESC"""
+    recipes = db.session.execute(sql, {"id": id}).fetchall()
+    return recipes
+
+
 def list_tags():
     sql = """SELECT id, tag 
              FROM tags"""
