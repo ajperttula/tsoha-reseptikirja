@@ -82,7 +82,15 @@
   <h3>Kommentit</h3>
   {% for c in comments %}
   <div class="comment">
-    {{ c[0] }} &nbsp; - &nbsp; {{ c[2].strftime("%d-%m-%Y %H:%M") }} <br>
+    {{ c[0] }} &nbsp; - &nbsp; {{ c[2].strftime("%d-%m-%Y %H:%M") }}
+    {% if c[0] == session.username %}
+    <form class="recipe" action="/delete-comment" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
+      <input type="hidden" name="comment_id" value="{{ c[3] }}">
+      <input type="submit" class="btn" onclick="return confirm('Haluatko varmasti poistaa kommentin?');" value="Poista kommentti">
+    </form>
+    {% endif %}
     <p>
       {{ c[1] }}
     </p>

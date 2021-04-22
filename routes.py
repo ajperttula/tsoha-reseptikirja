@@ -122,6 +122,14 @@ def add_comment():
     return redirect(f"recipe/{recipe_id}")
 
 
+@app.route("/delete-comment", methods=["POST"])
+def delete_comment():
+    csrf_check(request.form["csrf_token"])
+    recipe_id = request.form["recipe_id"]
+    comment_id = request.form["comment_id"]
+    reviews.delete_comment(comment_id)
+    return redirect(f"recipe/{recipe_id}")
+
 @app.route("/delete-recipe", methods=["POST"])
 def delete_recipe():
     csrf_check(request.form["csrf_token"])

@@ -98,6 +98,19 @@ input.recipe {
     width: 300px;
 }
 
+form.recipe {
+    display: block;
+    float: right;
+}
+
+.btn {
+    display: inline-block;
+    color: black;
+    border: 0;
+    background: 0;
+    font-size: inherit;
+}
+
 textarea {
     font-family: "Times New Roman", Georgia, Serif;
     width: 300px;
