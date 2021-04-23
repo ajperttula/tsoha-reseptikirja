@@ -187,7 +187,10 @@ def login():
 
 @app.route("/logout")
 def logout():
-    users.logout()
+    try:
+        users.logout()
+    except:
+        pass
     return redirect("/")
 
 

@@ -2,6 +2,7 @@
 {% block title %}Luo tunnus{% endblock %}
 {% block content %}
 <div class="content">
+  {% if not session.username %}
   <h2>Luo käyttäjätunnus</h2>
   <p>
     Käyttäjätunnuksen on oltava 3-20 merkkiä pitkä. 
@@ -14,6 +15,11 @@
     <input type="password" name="password_check" placeholder="Salasana uudelleen" minlength="8", maxlength="32"> <br>
     <input type="submit" value="Luo tunnus">
   </form>
+  {% else %}
+  <p>
+    Olet kirjautunut sisään tunnuksella {{ session.username }}.
+  </p>
+  {% endif %}
 </div>
 <script>
   function check(form) {

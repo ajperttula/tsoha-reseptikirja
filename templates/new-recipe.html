@@ -2,6 +2,7 @@
 {% block title %}Lisää resepti{% endblock %}
 {% block content %}
 <div class="content">
+  {% if session.username %}
   <h2>Lisää uusi resepti</h2>
   <form action="/add-recipe" method="POST" onsubmit="return check(this)">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -37,6 +38,11 @@
     </p>
     <input type="submit" value="Lisää">
   </form>
+  {% else %}
+  <p>
+    Kirjaudu sisään lisätäksesi reseptin.
+  </p>
+  {% endif %}
 </div>
 <script>
   function add_field() {
