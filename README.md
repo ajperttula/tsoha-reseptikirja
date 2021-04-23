@@ -11,7 +11,7 @@ Testaa sovellusta [Herokussa](https://tsoha-reseptikirja.herokuapp.com/)
 * Hakutuloksia voi lajitella lisäyspäivän tai arvosanan mukaan nousevaan tai laskevaan järjestykseen **(katselukerrat ei vielä toimi)**
 * Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen
 * Käyttäjä voi lisätä omia reseptejä
-* Reseptiin lisätään otsikko, kuvaus, ainesosat, ohje sekä tagit
+* Reseptiin lisätään otsikko, kuvaus, ainesosat, ohje sekä tagit **(uuden ainesosakentän lisäys suorittaa myös syötteiden tarkastusscriptin, saa vinkata, miten korjata)**
 * Käyttäjä voi muokata lisäämäänsä reseptiä
 * Käyttäjä voi poistaa lisäämänsä reseptin
 * Käyttäjä voi arvioida ja kommentoida reseptejä
