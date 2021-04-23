@@ -22,6 +22,7 @@ Testaa sovellusta [Herokussa](https://tsoha-reseptikirja.herokuapp.com/)
 
 ### Tulossa
 
+* Hakutulosten lajittelu tagien perusteella
 * Ylläpitäjäprofiili
 * Ylläpitäjä voi poistaa reseptejä, kommentteja sekä käyttäjiä
 * Ulkoasu vaatii vielä parantelua
