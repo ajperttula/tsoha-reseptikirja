@@ -28,16 +28,26 @@ def list_tags():
     return tags
 
 
-def search(keyword):
+def search(keyword, sortby, orderby):
     keyword = "%" + keyword.lower() + "%"
-    sql = """SELECT DISTINCT R.id, R.title 
-             FROM recipes R, ingredients I 
-             WHERE R.id=I.recipe_id 
-             AND R.visible=1 
+    sql = """SELECT DISTINCT R.id, R.title, COALESCE(AVG(G.grade), 0) AS A
+             FROM recipes R 
+             LEFT JOIN (SELECT recipe_id, ingredient FROM ingredients WHERE visible=1) AS I
+             ON R.id=I.recipe_id 
+             LEFT JOIN grades G 
+             ON R.id=G.recipe_id 
+             WHERE R.visible=1 
              AND (LOWER(R.title) LIKE :keyword 
              OR LOWER(R.description) LIKE :keyword 
              OR LOWER(R.instruction) LIKE :keyword 
-             OR LOWER(I.ingredient) LIKE :keyword)"""
+             OR LOWER(I.ingredient) LIKE :keyword) 
+             GROUP BY R.id"""
+    if sortby == "added":
+        sql += " ORDER BY R.id"
+    if sortby == "grade":
+        sql += " ORDER BY A"
+    if orderby == "desc":
+        sql += " DESC"
     results = db.session.execute(sql, {"keyword": keyword}).fetchall()
     return results
 

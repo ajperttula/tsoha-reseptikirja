@@ -20,6 +20,8 @@
       {% endif %}
       <form class="nav" action="/search" method="GET">
         <input type="text" name="keyword" placeholder="Hae reseptejä">
+        <input type="hidden" name="sortby" value="added">
+        <input type="hidden" name="orderby" value="desc">
         <input type="submit" value="Etsi">
       </form>
     </nav>

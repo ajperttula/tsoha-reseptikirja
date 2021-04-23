@@ -15,8 +15,10 @@ def index():
 @app.route("/search")
 def search():
     keyword = request.args["keyword"]
-    results = recipes.search(keyword)
-    return render_template("result.html", results=results)
+    sortby = request.args["sortby"]
+    orderby = request.args["orderby"]
+    results = recipes.search(keyword, sortby, orderby)
+    return render_template("result.html", results=results, keyword=keyword, sortby=sortby, orderby=orderby)
 
 
 @app.route("/recipe/<int:id>")

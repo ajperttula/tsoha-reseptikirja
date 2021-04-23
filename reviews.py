@@ -55,11 +55,9 @@ def grade_recipe(recipe_id, grade):
 def get_average(recipe_id):
     sql = """SELECT ROUND(AVG(grade), 1) 
              FROM grades 
-             WHERE recipe_id=:recipe_id;"""
+             WHERE recipe_id=:recipe_id"""
     average = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
-    if not average:
-        return "Ei arvosteluja"
-    return average
+    return "Ei arvosteluja" if not average else average
 
 
 def check_comment(comment):
