@@ -14,16 +14,16 @@
       <textarea name="description" placeholder="Kuvaile reseptiä lyhyesti" maxlength="200"></textarea>
     </p>
     Ainesosat: <br>
-    <p>
+    <p id="ingredients">
       <input class="recipe" type="text" name="ingredient" placeholder="Esim. 1 dl kermaa" maxlength="100">
       <input class="recipe" type="text" name="ingredient" maxlength="100">
       <input class="recipe" type="text" name="ingredient" maxlength="100">
       <input class="recipe" type="text" name="ingredient" maxlength="100">
       <input class="recipe" type="text" name="ingredient" maxlength="100">
       <input class="recipe" type="text" name="ingredient" maxlength="100">
-      <input class="recipe" type="text" name="ingredient" maxlength="100">
-      <input class="recipe" type="text" name="ingredient" maxlength="100">
-      <input class="recipe" type="text" name="ingredient" maxlength="100">
+    </p>
+    <p>
+      <button onclick="add_field()">Lisää rivi</button>
     </p>
     Ohje: <br>
     <p>
@@ -38,6 +38,16 @@
     <input type="submit" value="Lisää">
   </form>
 </div>
+<script>
+  function add_field() {
+    var x = document.getElementById("ingredients");
+    var new_field = document.createElement("input");
+    new_field.setAttribute("class", "recipe");
+    new_field.setAttribute("type", "text");
+    new_field.setAttribute("name", "ingredient");
+    x.append(new_field);
+  }
+</script>
 <script>
   function check(form) {
     if (form.title.value.length == 0) {
