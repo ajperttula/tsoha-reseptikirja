@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, abort
 from db import db
 import users
 import recipes
@@ -44,7 +44,8 @@ def add_recipe():
         tags = recipes.list_tags()
         return render_template("new-recipe.html", tags=tags)
     if request.method == "POST":
-        csrf_check(request.form["csrf_token"])
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
         title = request.form["title"]
         description = request.form["description"]
         instruction = request.form["instruction"]
@@ -59,7 +60,8 @@ def add_recipe():
 
 @app.route("/modify-recipe", methods=["POST"])
 def modify_recipe():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     title = request.form["title"]
     recipe_id = request.form["recipe_id"]
     description = request.form["description"]
@@ -73,7 +75,8 @@ def modify_recipe():
 
 @app.route("/execute-modification", methods=["POST"])
 def execute_modification():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     recipe_id = request.form["recipe_id"]
     title = request.form["title"]
     description = request.form["description"]
@@ -89,7 +92,8 @@ def execute_modification():
 
 @app.route("/add-favourite", methods=["POST"])
 def add_favourite():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     recipe_id = request.form["recipe_id"]
     recipes.add_favourite(recipe_id)
     return redirect(f"/recipe/{recipe_id}")
@@ -97,7 +101,8 @@ def add_favourite():
 
 @app.route("/delete-favourite", methods=["POST"])
 def delete_favourite():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     recipe_id = request.form["recipe_id"]
     recipes.delete_favourite(recipe_id)
     return redirect(f"/recipe/{recipe_id}")
@@ -105,7 +110,8 @@ def delete_favourite():
 
 @app.route("/grade-recipe", methods=["POST"])
 def grade_recipe():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     recipe_id = request.form["recipe_id"]
     grade = request.form["grade"]
     reviews.grade_recipe(recipe_id, grade)
@@ -114,7 +120,8 @@ def grade_recipe():
 
 @app.route("/add-comment", methods=["POST"])
 def add_comment():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     recipe_id = request.form["recipe_id"]
     sender_id = session["user_id"]
     comment = request.form["comment"]
@@ -126,7 +133,8 @@ def add_comment():
 
 @app.route("/delete-comment", methods=["POST"])
 def delete_comment():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     recipe_id = request.form["recipe_id"]
     comment_id = request.form["comment_id"]
     reviews.delete_comment(comment_id)
@@ -134,7 +142,8 @@ def delete_comment():
 
 @app.route("/delete-recipe", methods=["POST"])
 def delete_recipe():
-    csrf_check(request.form["csrf_token"])
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     recipe_id = request.form["recipe_id"]
     recipes.delete_recipe(recipe_id)
     reviews.delete_reviews(recipe_id)
@@ -192,8 +201,3 @@ def logout():
     except:
         pass
     return redirect("/")
-
-
-def csrf_check(token):
-    if session["csrf_token"] != token:
-        return render_template("error.html", error="Toiminto ei ole sallittu.")
