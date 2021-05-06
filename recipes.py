@@ -90,40 +90,44 @@ def add_favourite(recipe_id):
             sql, {"user_id": user_id, "recipe_id": recipe_id}).fetchone()[0]
         return result
 
-    user_id = session["user_id"]
-    if check_old_favourite():
-        sql = """UPDATE favourites 
-                 SET visible=1, 
-                 added=NOW() 
-                 WHERE user_id=:user_id 
-                 AND recipe_id=:recipe_id"""
-    else:
-        sql = """INSERT INTO favourites (user_id, recipe_id, added, visible) 
-                 VALUES (:user_id, :recipe_id, NOW(), 1)"""
-    db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
-    db.session.commit()
+    if recipe_exists(recipe_id):
+        user_id = session["user_id"]
+        if check_old_favourite():
+            sql = """UPDATE favourites 
+                    SET visible=1, 
+                    added=NOW() 
+                    WHERE user_id=:user_id 
+                    AND recipe_id=:recipe_id"""
+        else:
+            sql = """INSERT INTO favourites (user_id, recipe_id, added, visible) 
+                    VALUES (:user_id, :recipe_id, NOW(), 1)"""
+        db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
+        db.session.commit()
+        return True, ""
+    return False, "Reseptiä ei löytynyt."
 
 
 def delete_favourite(recipe_id):
-    user_id = session["user_id"]
-    sql = """UPDATE favourites 
-             SET visible=0 
-             WHERE user_id=:user_id 
-             AND recipe_id=:recipe_id"""
-    db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
-    db.session.commit()
+    if recipe_exists(recipe_id):
+        user_id = session["user_id"]
+        sql = """UPDATE favourites 
+                SET visible=0 
+                WHERE user_id=:user_id 
+                AND recipe_id=:recipe_id"""
+        db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
+        db.session.commit()
+        return True, ""
+    return False, "Reseptiä ei löytynyt."
 
 
 def get_recipe(recipe_id):
-    visible, msg = is_visible(recipe_id)
-    if not visible:
-        return False, msg
-    sql = """SELECT * 
-             FROM recipes 
-             WHERE id=:recipe_id"""
-    recipe = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()
-    return recipe, ""
-
+    if recipe_exists(recipe_id):
+        sql = """SELECT * 
+                FROM recipes 
+                WHERE id=:recipe_id"""
+        recipe = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()
+        return recipe, ""
+    return False, "Reseptiä ei löytynyt."
 
 def get_recipe_tags(recipe_id):
     sql = """SELECT T.tag 
@@ -145,15 +149,11 @@ def get_recipe_ingredients(recipe_id):
 
 
 def add_recipe(title, description, instruction, ingredients, tags):
-    check_ok, msg = check_recipe_inputs(
-
-        0,
-        title,
-        description,
-        instruction,
-        ingredients
-
-    )
+    check_ok, msg = check_recipe_inputs(0,
+                                        title,
+                                        description,
+                                        instruction,
+                                        ingredients)
     if not check_ok:
         return False, msg, None
     creator_id = session["user_id"]
@@ -319,15 +319,13 @@ def title_taken(title, recipe_id):
     return result
 
 
-def is_visible(recipe_id):
-    sql = """SELECT visible 
+def recipe_exists(recipe_id):
+    sql = """SELECT COUNT(*) 
              FROM recipes 
-             WHERE id=:recipe_id"""
-    result = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()
-
-    if not result or result[0] == 0:
-        return False, "Reseptiä ei löytynyt"
-    return True, ""
+             WHERE id=:recipe_id 
+             AND visible=1"""
+    result = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
+    return result
 
 
 def is_own_recipe(recipe_id):

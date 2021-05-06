@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, session, abort
+from flask import render_template, request, redirect, session
 from db import db
 import users
 import recipes
@@ -21,7 +21,7 @@ def search():
     return render_template("result.html", results=results, keyword=keyword, sortby=sortby, orderby=orderby)
 
 
-@app.route("/recipe/<int:id>")
+@app.route("/recipe/<int:id>") ##
 def recipe(id):
     recipe, msg = recipes.get_recipe(id)
     if not recipe:
@@ -37,7 +37,7 @@ def recipe(id):
                            average=average, favourite=favourite)
 
 
-@app.route("/add-recipe", methods=["GET", "POST"])
+@app.route("/add-recipe", methods=["GET", "POST"]) ##
 def add_recipe():
     if request.method == "GET":
         tags = recipes.list_tags()
@@ -57,7 +57,7 @@ def add_recipe():
         return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/modify-recipe/<int:id>")
+@app.route("/modify-recipe/<int:id>") ##
 def modify_recipe(id):
     recipe, msg = recipes.get_recipe(id)
     if not recipe:
@@ -72,7 +72,7 @@ def modify_recipe(id):
                            ingredients=ingredients, tags=tags, recipetags=recipetags)
 
 
-@app.route("/execute-modification", methods=["POST"])
+@app.route("/execute-modification", methods=["POST"]) ##
 def execute_modification():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
@@ -92,21 +92,25 @@ def execute_modification():
     return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/add-favourite", methods=["POST"])
+@app.route("/add-favourite", methods=["POST"]) ##
 def add_favourite():
     if session["csrf_token"] != request.form["csrf_token"]:
-        abort(403)
+        return render_template("error.html", error="Toiminto ei ole sallittu.")
     recipe_id = request.form["recipe_id"]
-    recipes.add_favourite(recipe_id)
+    add_ok, msg = recipes.add_favourite(recipe_id)
+    if not add_ok:
+        return render_template("error.html", error=msg)
     return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/delete-favourite", methods=["POST"])
+@app.route("/delete-favourite", methods=["POST"]) ##
 def delete_favourite():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
     recipe_id = request.form["recipe_id"]
-    recipes.delete_favourite(recipe_id)
+    delete_ok, msg = recipes.delete_favourite(recipe_id)
+    if not delete_ok:
+        return render_template("error.html", error=msg)
     return redirect(f"/recipe/{recipe_id}")
 
 
@@ -116,7 +120,9 @@ def grade_recipe():
         return render_template("error.html", error="Toiminto ei ole sallittu.")
     recipe_id = request.form["recipe_id"]
     grade = request.form["grade"]
-    reviews.grade_recipe(recipe_id, grade)
+    grade_ok, msg = reviews.grade_recipe(recipe_id, grade)
+    if not grade_ok:
+        return render_template("error.html", error=msg)
     return redirect(f"recipe/{recipe_id}")
 
 

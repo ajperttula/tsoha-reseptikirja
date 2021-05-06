@@ -46,10 +46,16 @@ def delete_comment(id):
 
 
 def grade_recipe(recipe_id, grade):
-    sql = """INSERT INTO grades (recipe_id, grade, visible) 
-             VALUES (:recipe_id, :grade, 1)"""
-    db.session.execute(sql, {"recipe_id": recipe_id, "grade": grade})
-    db.session.commit()
+    grade_ok, msg = check_grade(grade)
+    if not grade_ok:
+        return False, msg
+    if recipe_exists(recipe_id):
+        sql = """INSERT INTO grades (recipe_id, grade, visible) 
+                VALUES (:recipe_id, :grade, 1)"""
+        db.session.execute(sql, {"recipe_id": recipe_id, "grade": grade})
+        db.session.commit()
+        return True, ""
+    return False, "Reseptiä ei löytynyt."
 
 
 def get_average(recipe_id):
@@ -58,6 +64,25 @@ def get_average(recipe_id):
              WHERE recipe_id=:recipe_id"""
     average = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
     return "Ei arvosteluja" if not average else average
+
+
+def check_grade(grade):
+    try:
+        grade = int(grade)
+        if grade > 0 and grade < 6:
+            return True, ""
+        return False, "Arvosanan on oltava kokonaisluku väliltä 1-5."
+    except:
+        return False, "Arvosanan on oltava kokonaisluku väliltä 1-5."
+
+
+def recipe_exists(recipe_id):
+    sql = """SELECT COUNT(*) 
+             FROM recipes 
+             WHERE id=:recipe_id 
+             AND visible=1"""
+    result = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
+    return result
 
 
 def check_comment(comment):
