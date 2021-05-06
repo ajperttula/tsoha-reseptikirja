@@ -330,10 +330,15 @@ def is_visible(recipe_id):
     return True, ""
 
 
-def is_own_recipe(creator_id):
+def is_own_recipe(recipe_id):
+    sql = """SELECT creator_id 
+             FROM recipes 
+             WHERE id=:recipe_id"""
+    creator = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()
+    
     try:
-        if creator_id == session["user_id"]:
-            return True, ""
-        return False, "Toiminto ei ole sallittu."
+        if not creator or creator[0] != session["user_id"]:
+            return False, "Toiminto ei ole sallittu."
+        return True, ""
     except:
         return False, "Toiminto ei ole sallittu."

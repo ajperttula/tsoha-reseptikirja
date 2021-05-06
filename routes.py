@@ -62,7 +62,7 @@ def modify_recipe(id):
     recipe, msg = recipes.get_recipe(id)
     if not recipe:
         return render_template("error.html", error=msg)
-    own_recipe, msg = recipes.is_own_recipe(recipe[1])
+    own_recipe, msg = recipes.is_own_recipe(id)
     if not own_recipe:
         return render_template("error.html", error=msg)
     ingredients = recipes.get_recipe_ingredients(id)
@@ -77,6 +77,9 @@ def execute_modification():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
     recipe_id = request.form["recipe_id"]
+    own_recipe, msg = recipes.is_own_recipe(recipe_id)
+    if not own_recipe:
+        return render_template("error.html", error=msg)
     title = request.form["title"]
     description = request.form["description"]
     instruction = request.form["instruction"]
