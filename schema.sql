@@ -9,7 +9,7 @@ CREATE TABLE users (
 CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
     creator_id INTEGER REFERENCES users,
-    created_at TIMESTAMP,
+    created_at TIMESTAMPTZ,
     title TEXT UNIQUE,
     description TEXT,
     instruction TEXT,
@@ -39,7 +39,7 @@ CREATE TABLE comments (
     recipe_id INTEGER REFERENCES recipes,
     sender_id INTEGER REFERENCES users,
     comment TEXT,
-    sent_at TIMESTAMP,
+    sent_at TIMESTAMPTZ,
     visible INTEGER
 );
 
@@ -53,6 +53,6 @@ CREATE TABLE grades (
 CREATE TABLE favourites (
     user_id INTEGER REFERENCES users,
     recipe_id INTEGER REFERENCES recipes,
-    added TIMESTAMP,
+    added TIMESTAMPTZ,
     visible INTEGER
 );
