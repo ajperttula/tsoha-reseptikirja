@@ -5,26 +5,27 @@
   <h2>Muokkaa reseptiä</h2>
   <form action="/execute-modification" method="POST" onsubmit="return check(this)">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+    <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
     Otsikko: <br>
     <p>
-      <input class="recipe" type="text" name="title" value="{{ title }}" maxlength="50">
+      <input class="recipe" type="text" name="title" value="{{ recipe[3] }}" maxlength="50">
     </p>
     Kuvaus: <br>
     <p>
-      <textarea name="description" maxlength="200">{{ description }}</textarea>
+      <textarea name="description" maxlength="200">{{ recipe[4] }}</textarea>
     </p>
     Ainesosat ja määrät: <br>
-    <p>
+    <p id="ingredients">
       {% for i in ingredients %}
-      <input class="recipe" type="text" name="ingredient" value="{{ i }}" maxlength="100">
+      <input class="recipe" type="text" name="ingredient" value="{{ i[0] }}" maxlength="100">
       {% endfor %}
-      <input class="recipe" type="text" name="ingredient" maxlength="100">
-      <input class="recipe" type="text" name="ingredient" maxlength="100">
+    </p>
+    <p>
+      <button type="button" onclick="add_field()">Lisää rivi</button>
     </p>
     Ohje: <br>
     <p>
-      <textarea name="instruction" maxlength="2000">{{ instruction }}</textarea>
+      <textarea name="instruction" maxlength="2000">{{ recipe[5] }}</textarea>
     </p>
     Tagit: <br>
     <p>
@@ -37,9 +38,20 @@
       {% endfor %}
     </p>
     <input type="submit" value="Tallenna">
-    <a href="/recipe/{{ recipe_id }}"><button type="button">Peruuta</button></a>
+    <a href="/recipe/{{ recipe[0] }}"><button type="button">Peruuta</button></a>
   </form>
 </div>
+<script>
+  function add_field() {
+    var x = document.getElementById("ingredients");
+    var new_field = document.createElement("input");
+    new_field.setAttribute("class", "recipe");
+    new_field.setAttribute("type", "text");
+    new_field.setAttribute("name", "ingredient");
+    new_field.setAttribute("maxlength", "100");
+    x.append(new_field);
+  }
+</script>
 <script>
   function check(form) {
     if (form.title.value.length == 0) {

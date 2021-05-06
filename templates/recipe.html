@@ -18,26 +18,13 @@
       <input class="btn" type="submit" value="Lisää suosikeihin">
     </form>
     {% endif %}
-    {% if own_recipe %}
+    {% if session.user_id == recipe[1] %}
     <form class="titleline" action="/delete-recipe" method="POST">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
       <input class="btn" type="submit" onclick="return confirm('Haluatko varmasti poistaa reseptin?');" value="Poista resepti">
     </form>
-    <form class="titleline" action="/modify-recipe" method="POST">
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-      <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
-      <input type="hidden" name="title" value="{{ recipe[3] }}">
-      <input type="hidden" name="description" value="{{ recipe[4] }}">
-      <input type="hidden" name="instruction" value="{{ recipe[5] }}">
-      {% for i in ingredients %}
-      <input type="hidden" name="ingredient" value="{{ i[0] }}">
-      {% endfor %}
-      {% for t in tags %}
-      <input type="hidden" name="recipetag" value="{{ t[0] }}">
-      {% endfor %}
-      <input class="btn" type="submit" value="Muokkaa">
-    </form>
+    <a href="/modify-recipe/{{ recipe[0] }}"><button type="button">Muokkaa reseptiä</button></a>
     {% endif %}
     {% endif %}
   </div>

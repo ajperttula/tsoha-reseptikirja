@@ -333,6 +333,7 @@ def is_visible(recipe_id):
 def is_own_recipe(creator_id):
     try:
         if creator_id == session["user_id"]:
-            return True
+            return True, ""
+        return False, "Toiminto ei ole sallittu."
     except:
-        return False
+        return False, "Toiminto ei ole sallittu."
