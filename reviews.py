@@ -17,13 +17,14 @@ def add_comment(recipe_id, sender_id, comment):
     check_ok, msg = check_comment(comment)
     if not check_ok:
         return False, msg
-    sql = """INSERT INTO comments (recipe_id, sender_id, comment, sent_at, visible) 
-             VALUES (:recipe_id, :sender_id, :comment, NOW(), 1)"""
-    db.session.execute(sql, {"recipe_id": recipe_id,
-                       "sender_id": sender_id, "comment": comment})
-    db.session.commit()
-    return True, ""
-
+    if recipe_exists(recipe_id):
+        sql = """INSERT INTO comments (recipe_id, sender_id, comment, sent_at, visible) 
+                VALUES (:recipe_id, :sender_id, :comment, NOW(), 1)"""
+        db.session.execute(sql, {"recipe_id": recipe_id,
+                        "sender_id": sender_id, "comment": comment})
+        db.session.commit()
+        return True, ""
+    return False, "Reseptiä ei löytynyt."
 
 def delete_reviews(recipe_id):
     sql = """UPDATE comments 
@@ -38,11 +39,14 @@ def delete_reviews(recipe_id):
 
 
 def delete_comment(id):
-    sql = """UPDATE comments 
-             SET visible=0 
-             WHERE id=:id"""
-    db.session.execute(sql, {"id": id})
-    db.session.commit()
+    if is_own_comment(id):
+        sql = """UPDATE comments 
+                SET visible=0 
+                WHERE id=:id"""
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+        return True, ""
+    return False, "Toiminto ei ole sallittu."
 
 
 def grade_recipe(recipe_id, grade):
@@ -90,3 +94,14 @@ def check_comment(comment):
     if len(comment) > 1000:
         return False, "Kommentti on liian pitkä."
     return True, ""
+
+
+def is_own_comment(comment_id):
+    sql = """SELECT sender_id 
+             FROM comments 
+             WHERE id=:comment_id"""
+    sender = db.session.execute(sql, {"comment_id": comment_id}).fetchone()
+
+    if not sender or sender[0] != session["user_id"]:
+        return False
+    return True
