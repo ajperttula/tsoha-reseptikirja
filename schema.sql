@@ -10,7 +10,7 @@ CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
     creator_id INTEGER REFERENCES users,
     created_at TIMESTAMPTZ,
-    title TEXT UNIQUE,
+    title TEXT,
     description TEXT,
     instruction TEXT,
     visible INTEGER
