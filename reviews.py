@@ -46,9 +46,8 @@ def delete_comment(id):
 
 
 def grade_recipe(recipe_id, grade):
-    grade_ok, msg = check_grade(grade)
-    if not grade_ok:
-        return False, msg
+    if not check_grade(grade):
+        return False, "Arvosanan on oltava kokonaisluku väliltä 1-5."
     if recipe_exists(recipe_id):
         sql = """INSERT INTO grades (recipe_id, grade, visible) 
                 VALUES (:recipe_id, :grade, 1)"""
@@ -70,10 +69,10 @@ def check_grade(grade):
     try:
         grade = int(grade)
         if grade > 0 and grade < 6:
-            return True, ""
-        return False, "Arvosanan on oltava kokonaisluku väliltä 1-5."
+            return True
+        return False
     except:
-        return False, "Arvosanan on oltava kokonaisluku väliltä 1-5."
+        return False
 
 
 def recipe_exists(recipe_id):

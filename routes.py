@@ -114,7 +114,7 @@ def delete_favourite():
     return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/grade-recipe", methods=["POST"])
+@app.route("/grade-recipe", methods=["POST"]) ##
 def grade_recipe():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
