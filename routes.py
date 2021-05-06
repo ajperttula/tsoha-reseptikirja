@@ -155,7 +155,9 @@ def delete_recipe():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
     recipe_id = request.form["recipe_id"]
-    recipes.delete_recipe(recipe_id)
+    delete_ok, msg = recipes.delete_recipe(recipe_id)
+    if not delete_ok:
+        return render_template("error.html", error=msg)
     reviews.delete_reviews(recipe_id)
     return redirect("/")
 
@@ -168,11 +170,9 @@ def create_user():
         username = request.form["username"]
         password = request.form["password"]
         password_2 = request.form["password_check"]
-        check_ok, msg = users.check_username_password(
-            username,
-            password,
-            password_2
-        )
+        check_ok, msg = users.check_username_password(username,
+                                                      password,
+                                                      password_2)
         if not check_ok:
             return render_template("error.html", error=msg)
         create_ok, msg = users.create_user(username, password)

@@ -262,27 +262,33 @@ def modify_tags(recipe_id, tags):
 
 
 def delete_recipe(recipe_id):
-    sql = """UPDATE recipes 
-             SET visible=0 
-             WHERE id=:recipe_id"""
-    db.session.execute(sql, {"recipe_id": recipe_id})
+    own_recipe, msg = is_own_recipe(recipe_id)
+    if not own_recipe:
+        return False, msg
+    if recipe_exists(recipe_id):
+        sql = """UPDATE recipes 
+                SET visible=0 
+                WHERE id=:recipe_id"""
+        db.session.execute(sql, {"recipe_id": recipe_id})
 
-    sql = """UPDATE ingredients 
-             SET visible=0 
-             WHERE recipe_id=:recipe_id"""
-    db.session.execute(sql, {"recipe_id": recipe_id})
+        sql = """UPDATE ingredients 
+                SET visible=0 
+                WHERE recipe_id=:recipe_id"""
+        db.session.execute(sql, {"recipe_id": recipe_id})
 
-    sql = """UPDATE recipetags 
-             SET visible=0 
-             WHERE recipe_id=:recipe_id"""
-    db.session.execute(sql, {"recipe_id": recipe_id})
+        sql = """UPDATE recipetags 
+                SET visible=0 
+                WHERE recipe_id=:recipe_id"""
+        db.session.execute(sql, {"recipe_id": recipe_id})
 
-    sql = """UPDATE favourites 
-             SET visible=0 
-             WHERE recipe_id=:recipe_id"""
-    db.session.execute(sql, {"recipe_id": recipe_id})
+        sql = """UPDATE favourites 
+                SET visible=0 
+                WHERE recipe_id=:recipe_id"""
+        db.session.execute(sql, {"recipe_id": recipe_id})
 
-    db.session.commit()
+        db.session.commit()
+        return True, ""
+    return False, "Reseptiä ei löytynyt"
 
 
 def check_recipe_inputs(recipe_id, title, description, instruction, ingredients):
