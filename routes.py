@@ -32,7 +32,7 @@ def search():
     return render_template("result.html", results=results, keyword=keyword, sortby=sortby, orderby=orderby)
 
 
-@app.route("/recipe/<int:id>") ##
+@app.route("/recipe/<int:id>")
 def recipe(id):
     recipe, msg = recipes.get_recipe(id)
     if not recipe:
@@ -44,11 +44,11 @@ def recipe(id):
     average = reviews.get_average(id)
     comments = reviews.get_comments(id)
     return render_template("recipe.html", creator=creator, recipe=recipe, tags=tags,
-                           ingredients=ingredients, comments=comments, 
+                           ingredients=ingredients, comments=comments,
                            average=average, favourite=favourite)
 
 
-@app.route("/add-recipe", methods=["GET", "POST"]) ##
+@app.route("/add-recipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "GET":
         tags = recipes.list_tags()
@@ -68,7 +68,7 @@ def add_recipe():
         return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/modify-recipe/<int:id>") ##
+@app.route("/modify-recipe/<int:id>")
 def modify_recipe(id):
     recipe, msg = recipes.get_recipe(id)
     if not recipe:
@@ -83,7 +83,7 @@ def modify_recipe(id):
                            ingredients=ingredients, tags=tags, recipetags=recipetags)
 
 
-@app.route("/execute-modification", methods=["POST"]) ##
+@app.route("/execute-modification", methods=["POST"])
 def execute_modification():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
@@ -103,7 +103,7 @@ def execute_modification():
     return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/add-favourite", methods=["POST"]) ##
+@app.route("/add-favourite", methods=["POST"])
 def add_favourite():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
@@ -114,7 +114,7 @@ def add_favourite():
     return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/delete-favourite", methods=["POST"]) ##
+@app.route("/delete-favourite", methods=["POST"])
 def delete_favourite():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
@@ -125,7 +125,7 @@ def delete_favourite():
     return redirect(f"/recipe/{recipe_id}")
 
 
-@app.route("/grade-recipe", methods=["POST"]) ##
+@app.route("/grade-recipe", methods=["POST"])
 def grade_recipe():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
@@ -137,7 +137,7 @@ def grade_recipe():
     return redirect(f"recipe/{recipe_id}")
 
 
-@app.route("/add-comment", methods=["POST"]) ##
+@app.route("/add-comment", methods=["POST"])
 def add_comment():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
@@ -150,7 +150,7 @@ def add_comment():
     return redirect(f"recipe/{recipe_id}")
 
 
-@app.route("/delete-comment", methods=["POST"]) ##
+@app.route("/delete-comment", methods=["POST"])
 def delete_comment():
     if session["csrf_token"] != request.form["csrf_token"]:
         return render_template("error.html", error="Toiminto ei ole sallittu.")
@@ -160,6 +160,7 @@ def delete_comment():
     if not delete_ok:
         return render_template("error.html", error=msg)
     return redirect(f"recipe/{recipe_id}")
+
 
 @app.route("/delete-recipe", methods=["POST"])
 def delete_recipe():

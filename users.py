@@ -77,7 +77,7 @@ def get_username(user_id):
 def is_own_profile(id):
     try:
         if id == session["user_id"]:
-            return True,""
+            return True, ""
         else:
             return False, "Pääsy evätty."
     except:

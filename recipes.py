@@ -5,13 +5,13 @@ from flask import session
 def list_recipes(tag_id=None):
     if tag_id:
         sql = """SELECT R.id, R.title 
-                FROM recipes R, 
-                recipetags T 
-                WHERE R.id=T.recipe_id 
-                AND T.tag_id=:tag_id 
-                AND R.visible=1 
-                AND T.visible=1 
-                ORDER BY R.id DESC"""
+                 FROM recipes R, 
+                 recipetags T 
+                 WHERE R.id=T.recipe_id 
+                 AND T.tag_id=:tag_id 
+                 AND R.visible=1 
+                 AND T.visible=1 
+                 ORDER BY R.id DESC"""
         recipes = db.session.execute(sql, {"tag_id": tag_id}).fetchall()
     else:
         sql = """SELECT id, title 
@@ -69,10 +69,10 @@ def is_favourite(recipe_id):
     try:
         user_id = session["user_id"]
         sql = """SELECT COUNT(*) 
-                FROM favourites 
-                WHERE user_id=:user_id 
-                AND recipe_id=:recipe_id 
-                AND visible=1"""
+                 FROM favourites 
+                 WHERE user_id=:user_id 
+                 AND recipe_id=:recipe_id 
+                 AND visible=1"""
         result = db.session.execute(
             sql, {"user_id": user_id, "recipe_id": recipe_id}).fetchone()[0]
         if result:
@@ -92,6 +92,7 @@ def list_favourites(user_id):
     recipes = db.session.execute(sql, {"user_id": user_id}).fetchall()
     return recipes
 
+
 def add_favourite(recipe_id):
     def check_old_favourite():
         sql = """SELECT COUNT(*) 
@@ -107,13 +108,13 @@ def add_favourite(recipe_id):
         user_id = session["user_id"]
         if check_old_favourite():
             sql = """UPDATE favourites 
-                    SET visible=1, 
-                    added=NOW() 
-                    WHERE user_id=:user_id 
-                    AND recipe_id=:recipe_id"""
+                     SET visible=1, 
+                     added=NOW() 
+                     WHERE user_id=:user_id 
+                     AND recipe_id=:recipe_id"""
         else:
             sql = """INSERT INTO favourites (user_id, recipe_id, added, visible) 
-                    VALUES (:user_id, :recipe_id, NOW(), 1)"""
+                     VALUES (:user_id, :recipe_id, NOW(), 1)"""
         db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
         db.session.commit()
         return True, ""
@@ -124,9 +125,9 @@ def delete_favourite(recipe_id):
     if recipe_exists(recipe_id):
         user_id = session["user_id"]
         sql = """UPDATE favourites 
-                SET visible=0 
-                WHERE user_id=:user_id 
-                AND recipe_id=:recipe_id"""
+                 SET visible=0 
+                 WHERE user_id=:user_id 
+                 AND recipe_id=:recipe_id"""
         db.session.execute(sql, {"user_id": user_id, "recipe_id": recipe_id})
         db.session.commit()
         return True, ""
@@ -144,11 +145,12 @@ def get_recipe(recipe_id):
     if recipe_exists(recipe_id):
         add_view()
         sql = """SELECT * 
-                FROM recipes 
-                WHERE id=:recipe_id"""
+                 FROM recipes 
+                 WHERE id=:recipe_id"""
         recipe = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()
         return recipe, ""
     return False, "Reseptiä ei löytynyt."
+
 
 def get_recipe_tags(recipe_id):
     sql = """SELECT T.tag 
@@ -288,25 +290,21 @@ def delete_recipe(recipe_id):
         return False, msg
     if recipe_exists(recipe_id):
         sql = """UPDATE recipes 
-                SET visible=0 
-                WHERE id=:recipe_id"""
+                 SET visible=0 
+                 WHERE id=:recipe_id"""
         db.session.execute(sql, {"recipe_id": recipe_id})
-
         sql = """UPDATE ingredients 
-                SET visible=0 
-                WHERE recipe_id=:recipe_id"""
+                 SET visible=0 
+                 WHERE recipe_id=:recipe_id"""
         db.session.execute(sql, {"recipe_id": recipe_id})
-
         sql = """UPDATE recipetags 
-                SET visible=0 
-                WHERE recipe_id=:recipe_id"""
+                 SET visible=0 
+                 WHERE recipe_id=:recipe_id"""
         db.session.execute(sql, {"recipe_id": recipe_id})
-
         sql = """UPDATE favourites 
-                SET visible=0 
-                WHERE recipe_id=:recipe_id"""
+                 SET visible=0 
+                 WHERE recipe_id=:recipe_id"""
         db.session.execute(sql, {"recipe_id": recipe_id})
-
         db.session.commit()
         return True, ""
     return False, "Reseptiä ei löytynyt"
@@ -315,23 +313,17 @@ def delete_recipe(recipe_id):
 def check_recipe_inputs(recipe_id, title, description, instruction, ingredients):
     if len(title) == 0:
         return False, "Reseptillä ei ole otsikkoa."
-
     if len(title) > 50:
         return False, "Otsikon maksimipituus on 50 merkkiä."
-
     if title_taken(title, recipe_id):
         return False, "Otsikko on jo käytössä toisessa reseptissä."
-
     if len(description) > 200:
         return False, "Kuvauksen maksimipituus on 200 merkkiä."
-
     if len(instruction) > 2000:
         return False, "Ohjeen maksimipituus on 2000 merkkiä."
-
     for i in ingredients:
         if len(i) > 100:
             return False, "Ainesosan maksimipituus on 100 merkkiä."
-
     return True, ""
 
 
@@ -360,7 +352,6 @@ def is_own_recipe(recipe_id):
              FROM recipes 
              WHERE id=:recipe_id"""
     creator = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()
-    
     try:
         if not creator or creator[0] != session["user_id"]:
             return False, "Toiminto ei ole sallittu."
