@@ -20,13 +20,15 @@ def check_username_password(username, password, password_2):
     return True, ""
 
 
-def create_user(username, password):
+def create_user(username, password, password_2):
+    check_ok, msg = check_username_password(username, password, password_2)
+    if not check_ok:
+        return False, msg
     hash_value = generate_password_hash(password)
     sql = """INSERT INTO users (username, password, role, visible) 
              VALUES (:username, :hash_value, 0, 1)"""
     try:
-        db.session.execute(
-            sql, {"username": username, "hash_value": hash_value})
+        db.session.execute(sql, {"username": username, "hash_value": hash_value})
     except:
         return False, "Käyttäjätunnus on varattu."
     db.session.commit()

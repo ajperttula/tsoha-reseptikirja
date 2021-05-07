@@ -169,15 +169,10 @@ def create_user():
         username = request.form["username"]
         password = request.form["password"]
         password_2 = request.form["password_check"]
-        check_ok, msg = users.check_username_password(username,
-                                                      password,
-                                                      password_2)
-        if not check_ok:
-            return render_template("error.html", error=msg)
-        create_ok, msg = users.create_user(username, password)
+        create_ok, msg = users.create_user(username, password, password_2)
         if not create_ok:
-            return render_template("error.html", error=msg)
-        return render_template("new-user.html", msg=msg)
+            return render_template("new-user.html", error=msg)
+        return render_template("success.html", msg=msg)
 
 
 @app.route("/profile/<int:id>")
@@ -200,7 +195,7 @@ def login():
         check_ok, msg = users.check_login(username, password)
         if check_ok:
             return redirect("/")
-        return render_template("error.html", error=msg)
+        return render_template("login.html", error=msg)
 
 
 @app.route("/logout")

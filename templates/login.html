@@ -9,6 +9,9 @@
     <input type="password" name="password" placeholder="Salasana" minlength="8", maxlength="32"> <br>
     <input type="submit" value="Kirjaudu">
   </form>
+  <p>
+    {{ error }}
+  </p>
   {% else %}
   <p>
     Olet kirjautunut sisään tunnuksella {{ session.username }}.
