@@ -2,12 +2,23 @@ from db import db
 from flask import session
 
 
-def list_recipes(): ## ttätä ei tällä hetkellä käytetä
-    sql = """SELECT id, title 
-             FROM recipes 
-             WHERE visible=1 
-             ORDER BY id DESC"""
-    recipes = db.session.execute(sql).fetchall()
+def list_recipes(tag_id=None):
+    if tag_id:
+        sql = """SELECT R.id, R.title 
+                FROM recipes R, 
+                recipetags T 
+                WHERE R.id=T.recipe_id 
+                AND T.tag_id=:tag_id 
+                AND R.visible=1 
+                AND T.visible=1 
+                ORDER BY R.id DESC"""
+        recipes = db.session.execute(sql, {"tag_id": tag_id}).fetchall()
+    else:
+        sql = """SELECT id, title 
+                 FROM recipes
+                 WHERE visible=1
+                 ORDER BY id DESC"""
+        recipes = db.session.execute(sql).fetchall()
     return recipes
 
 

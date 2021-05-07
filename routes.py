@@ -11,6 +11,18 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/all-recipes", methods=["GET", "POST"])
+def all_recipes():
+    tags = recipes.list_tags()
+    if request.method == "GET":
+        results = recipes.list_recipes()
+        return render_template("all-recipes.html", tags=tags, results=results)
+    if request.method == "POST":
+        tag_id = request.form["tag"]
+        results = recipes.list_recipes(tag_id)
+        return render_template("all-recipes.html", tags=tags, results=results)
+
+
 @app.route("/search")
 def search():
     keyword = request.args["keyword"]

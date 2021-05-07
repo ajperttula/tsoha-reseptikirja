@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Etusivu{% endblock %}
+{% block content %}
+<div class="content">
+  <h2>Kategoriat</h2>
+  <p>
+    <form class="buttons" action="/all-recipes" method="POST">
+      <input type="hidden" name="tag" value="">
+      <input type="submit" value="Kaikki">
+    </form>
+    {% for t in tags %}
+    <form class="buttons" action="/all-recipes" method="POST">
+      <input type="hidden" name="tag" value="{{ t[0] }}">
+      <input type="submit" value="{{ t[1] }}">
+    </form>
+    {% endfor %}
+  </p>
+  <hr>
+  <p>
+    {% for r in results %}
+    <a href="/recipe/{{ r[0] }}">{{ r[1] }}</a> <br>
+    {% endfor %}
+  </p>
+</div>
+{% endblock %}
