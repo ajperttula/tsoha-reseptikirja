@@ -8,8 +8,7 @@ import reviews
 
 @app.route("/")
 def index():
-    list = recipes.list_recipes()
-    return render_template("index.html", recipes=list)
+    return render_template("index.html")
 
 
 @app.route("/search")
@@ -178,7 +177,7 @@ def create_user():
         create_ok, msg = users.create_user(username, password)
         if not create_ok:
             return render_template("error.html", error=msg)
-        return redirect("/")
+        return render_template("new-user.html", msg=msg)
 
 
 @app.route("/profile/<int:id>")

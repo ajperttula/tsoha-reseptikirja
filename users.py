@@ -30,7 +30,7 @@ def create_user(username, password):
     except:
         return False, "Käyttäjätunnus on varattu."
     db.session.commit()
-    return True, ""
+    return True, f"Tunnus {username} luotu onnistuneesti!"
 
 
 def check_login(username, password):

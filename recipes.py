@@ -2,7 +2,7 @@ from db import db
 from flask import session
 
 
-def list_recipes():
+def list_recipes(): ## ttätä ei tällä hetkellä käytetä
     sql = """SELECT id, title 
              FROM recipes 
              WHERE visible=1 
