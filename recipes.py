@@ -30,7 +30,7 @@ def list_tags():
 
 def search(keyword, sortby, orderby):
     keyword = "%" + keyword.lower() + "%"
-    sql = """SELECT DISTINCT R.id, R.title, COALESCE(AVG(G.grade), 0) AS A
+    sql = """SELECT DISTINCT R.id, R.title, R.viewed, COALESCE(AVG(G.grade), 0) AS A 
              FROM recipes R 
              LEFT JOIN (SELECT recipe_id, ingredient FROM ingredients WHERE visible=1) AS I
              ON R.id=I.recipe_id 
@@ -46,6 +46,8 @@ def search(keyword, sortby, orderby):
         sql += " ORDER BY R.id"
     if sortby == "grade":
         sql += " ORDER BY A"
+    if sortby == "views":
+        sql += " ORDER BY R.viewed"
     if orderby == "desc":
         sql += " DESC"
     results = db.session.execute(sql, {"keyword": keyword}).fetchall()
@@ -121,7 +123,15 @@ def delete_favourite(recipe_id):
 
 
 def get_recipe(recipe_id):
+    def add_view():
+        sql = """UPDATE recipes 
+                 SET viewed=viewed+1 
+                 WHERE id=:recipe_id"""
+        db.session.execute(sql, {"recipe_id": recipe_id})
+        db.session.commit()
+
     if recipe_exists(recipe_id):
+        add_view()
         sql = """SELECT * 
                 FROM recipes 
                 WHERE id=:recipe_id"""
@@ -157,8 +167,8 @@ def add_recipe(title, description, instruction, ingredients, tags):
     if not check_ok:
         return False, msg, None
     creator_id = session["user_id"]
-    sql = """INSERT INTO recipes (creator_id, created_at, title, description, instruction, visible) 
-             VALUES (:creator_id, NOW(), :title, :description, :instruction, 1) 
+    sql = """INSERT INTO recipes (creator_id, created_at, viewed, title, description, instruction, visible) 
+             VALUES (:creator_id, NOW(), 0, :title, :description, :instruction, 1) 
              RETURNING id"""
     recipe_id = db.session.execute(sql, {"creator_id": creator_id, "title": title, "description": description,
                                          "instruction": instruction}).fetchone()[0]

@@ -3,7 +3,7 @@
 {% block content %}
 <div class="content">
   <div class="titleline">
-    <h2>{{ recipe[3] }}</h2>
+    <h2>{{ recipe[4] }}</h2>
     {% if session.username %}
     {% if favourite %}
     <form action="/delete-favourite" method="POST">
@@ -57,7 +57,7 @@
     {% endfor %}
   </p>
   <p>
-    {{ recipe[4] }}
+    {{ recipe[5] }}
   </p>
   <p>
     <ul>
@@ -67,7 +67,7 @@
     </ul>
   </p>
   <p style="white-space: pre-line;">
-    {{ recipe[5] }}
+    {{ recipe[6] }}
   </p>
   <hr>
   <h3>Kommentit</h3>
