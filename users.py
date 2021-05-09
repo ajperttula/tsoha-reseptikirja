@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from os import urandom
 
 
-def check_username_password(username, password, password_2):
+def check_username_password(username, password, password_2, role):
     if len(username) < 3:
         return False, "Antamasi käyttäjätunnus on liian lyhyt."
     if len(username) > 20:
@@ -17,18 +17,20 @@ def check_username_password(username, password, password_2):
         return False, "Salasana on liian pitkä."
     if password == password.lower() or password == password.upper():
         return False, "Salasanan pitää sisältää pieniä ja suuria kirjaimia."
+    if role != "1" and role != "0":
+        return False, "Valitse rooliksi käyttäjä tai ylläpitäjä."
     return True, ""
 
 
-def create_user(username, password, password_2):
-    check_ok, msg = check_username_password(username, password, password_2)
+def create_user(username, password, password_2, role):
+    check_ok, msg = check_username_password(username, password, password_2, role)
     if not check_ok:
         return False, msg
     hash_value = generate_password_hash(password)
     sql = """INSERT INTO users (username, password, role, visible) 
-             VALUES (:username, :hash_value, 0, 1)"""
+             VALUES (:username, :hash_value, :role, 1)"""
     try:
-        db.session.execute(sql, {"username": username, "hash_value": hash_value})
+        db.session.execute(sql, {"username": username, "hash_value": hash_value, "role": role})
     except:
         return False, "Käyttäjätunnus on varattu."
     db.session.commit()

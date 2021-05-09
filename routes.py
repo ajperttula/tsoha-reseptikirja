@@ -188,7 +188,8 @@ def create_user():
         username = request.form["username"]
         password = request.form["password"]
         password_2 = request.form["password_check"]
-        create_ok, msg = users.create_user(username, password, password_2)
+        role = request.form["role"]
+        create_ok, msg = users.create_user(username, password, password_2, role)
         if not create_ok:
             return render_template("new-user.html", error=msg)
         return render_template("success.html", msg=msg)
