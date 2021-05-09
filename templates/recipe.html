@@ -23,12 +23,14 @@
     </form>
     {% endif %}
     {% if session.user_id == recipe[1] %}
+    <a href="/modify-recipe/{{ recipe[0] }}"><button type="button">Muokkaa reseptiä</button></a>
+    {% endif %}
+    {% if session.user_id == recipe[1] or session.role == "admin"%}
     <form class="buttons" action="/delete-recipe" method="POST">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="hidden" name="recipe_id" value="{{ recipe[0] }}">
       <input type="submit" onclick="return confirm('Haluatko varmasti poistaa reseptin?');" value="Poista resepti">
     </form>
-    <a href="/modify-recipe/{{ recipe[0] }}"><button type="button">Muokkaa reseptiä</button></a>
     {% endif %}
     <form style="float: right;" action="/grade-recipe" method="POST">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

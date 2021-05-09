@@ -288,9 +288,10 @@ def modify_tags(recipe_id, tags):
 
 
 def delete_recipe(recipe_id):
-    own_recipe, msg = is_own_recipe(recipe_id)
-    if not own_recipe:
-        return False, msg
+    if not admin():
+        own_recipe, msg = is_own_recipe(recipe_id)
+        if not own_recipe:
+            return False, msg
     if recipe_exists(recipe_id):
         sql = """UPDATE recipes 
                  SET visible=0 
@@ -352,6 +353,7 @@ def recipe_exists(recipe_id):
     except:
         return False
 
+
 def is_own_recipe(recipe_id):
     sql = """SELECT creator_id 
              FROM recipes 
@@ -363,3 +365,10 @@ def is_own_recipe(recipe_id):
         return True, ""
     except:
         return False, "Toiminto ei ole sallittu."
+
+
+def admin():
+    try:
+        return session["role"] == "admin"
+    except:
+        return False

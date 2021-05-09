@@ -49,6 +49,8 @@ def check_login(username, password):
         session["username"] = username
         user_id = get_user_id(username)
         session["user_id"] = user_id
+        role = get_user_role(user_id)
+        session["role"] = role
         session["csrf_token"] = urandom(16).hex()
         return True, ""
     return False, "Käyttäjätunnus tai salasana väärin."
@@ -57,6 +59,7 @@ def check_login(username, password):
 def logout():
     del session["username"]
     del session["user_id"]
+    del session["role"]
     del session["csrf_token"]
 
 
@@ -66,6 +69,14 @@ def get_user_id(username):
              WHERE username=:username"""
     user_id = db.session.execute(sql, {"username": username}).fetchone()[0]
     return user_id
+
+
+def get_user_role(user_id):
+    sql = """SELECT role 
+             FROM users 
+             WHERE id=:user_id"""
+    role = db.session.execute(sql, {"user_id": user_id}).fetchone()[0]
+    return "admin" if role == 1 else "user"
 
 
 def get_username(user_id):
