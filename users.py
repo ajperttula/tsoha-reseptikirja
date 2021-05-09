@@ -27,8 +27,8 @@ def create_user(username, password, password_2, role):
     if not check_ok:
         return False, msg
     hash_value = generate_password_hash(password)
-    sql = """INSERT INTO users (username, password, role, visible) 
-             VALUES (:username, :hash_value, :role, 1)"""
+    sql = """INSERT INTO users (username, password, role) 
+             VALUES (:username, :hash_value, :role)"""
     try:
         db.session.execute(sql, {"username": username, "hash_value": hash_value, "role": role})
     except:
@@ -38,11 +38,11 @@ def create_user(username, password, password_2, role):
 
 
 def check_login(username, password):
-    sql = """SELECT password, visible 
+    sql = """SELECT password 
              FROM users 
              WHERE username=:username"""
     result = db.session.execute(sql, {"username": username}).fetchone()
-    if result == None or result[1] == 0:
+    if result == None:
         return False, "Käyttäjätunnus tai salasana väärin."
     hash_value = result[0]
     if check_password_hash(hash_value, password):
