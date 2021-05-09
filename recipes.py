@@ -58,9 +58,9 @@ def search(keyword, sortby, orderby):
              GROUP BY R.id"""
     if sortby == "added":
         sql += " ORDER BY R.id"
-    if sortby == "grade":
+    elif sortby == "grade":
         sql += " ORDER BY A"
-    if sortby == "views":
+    else:
         sql += " ORDER BY R.viewed"
     if orderby == "desc":
         sql += " DESC"
