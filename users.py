@@ -41,7 +41,7 @@ def check_login(username, password):
              WHERE username=:username"""
     result = db.session.execute(sql, {"username": username}).fetchone()
     if result == None or result[1] == 0:
-        return False, "Käyttäjätunnusta ei löytynyt."
+        return False, "Käyttäjätunnus tai salasana väärin."
     hash_value = result[0]
     if check_password_hash(hash_value, password):
         session["username"] = username
@@ -49,7 +49,7 @@ def check_login(username, password):
         session["user_id"] = user_id
         session["csrf_token"] = urandom(16).hex()
         return True, ""
-    return False, "Väärä salasana."
+    return False, "Käyttäjätunnus tai salasana väärin."
 
 
 def logout():
