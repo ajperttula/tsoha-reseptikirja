@@ -40,7 +40,7 @@ def delete_reviews(recipe_id):
 
 
 def delete_comment(id):
-    if is_own_comment(id):
+    if admin() or is_own_comment(id):
         sql = """UPDATE comments 
                  SET visible=0 
                  WHERE id=:id"""
@@ -108,3 +108,10 @@ def is_own_comment(comment_id):
     if not sender or sender[0] != session["user_id"]:
         return False
     return True
+
+
+def admin():
+    try:
+        return session["role"] == "admin"
+    except:
+        return False
