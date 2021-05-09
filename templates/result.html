@@ -20,12 +20,12 @@
       {% endif %}
     </select>
     <select name="orderby">
-      {% if orderby == 'asc' %}
-      <option value="asc" selected>Nouseva</option>
-      <option value="desc">Laskeva</option>
-      {% else %}
+      {% if orderby == 'desc' %}
       <option value="asc">Nouseva</option>
       <option value="desc" selected>Laskeva</option>
+      {% else %}
+      <option value="asc" selected>Nouseva</option>
+      <option value="desc">Laskeva</option>
       {% endif %}
     </select>
     <input type="hidden" name="keyword" value="{{ keyword }}">
