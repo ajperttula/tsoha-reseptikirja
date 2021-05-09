@@ -81,12 +81,15 @@ def check_grade(grade):
 
 
 def recipe_exists(recipe_id):
-    sql = """SELECT COUNT(*) 
-             FROM recipes 
-             WHERE id=:recipe_id 
-             AND visible=1"""
-    result = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
-    return result
+    try:
+        sql = """SELECT COUNT(*) 
+                FROM recipes 
+                WHERE id=:recipe_id 
+                AND visible=1"""
+        result = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
+        return result
+    except:
+        return False
 
 
 def check_comment(comment):

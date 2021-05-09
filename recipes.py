@@ -4,15 +4,18 @@ from flask import session
 
 def list_recipes(tag_id=None):
     if tag_id:
-        sql = """SELECT R.id, R.title 
-                 FROM recipes R, 
-                 recipetags T 
-                 WHERE R.id=T.recipe_id 
-                 AND T.tag_id=:tag_id 
-                 AND R.visible=1 
-                 AND T.visible=1 
-                 ORDER BY R.id DESC"""
-        recipes = db.session.execute(sql, {"tag_id": tag_id}).fetchall()
+        try:
+            sql = """SELECT R.id, R.title 
+                     FROM recipes R, 
+                     recipetags T 
+                     WHERE R.id=T.recipe_id 
+                     AND T.tag_id=:tag_id 
+                     AND R.visible=1 
+                     AND T.visible=1 
+                     ORDER BY R.id DESC"""
+            recipes = db.session.execute(sql, {"tag_id": tag_id}).fetchall()
+        except:
+            return []
     else:
         sql = """SELECT id, title 
                  FROM recipes
@@ -339,13 +342,15 @@ def title_taken(title, recipe_id):
 
 
 def recipe_exists(recipe_id):
-    sql = """SELECT COUNT(*) 
-             FROM recipes 
-             WHERE id=:recipe_id 
-             AND visible=1"""
-    result = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
-    return result
-
+    try:
+        sql = """SELECT COUNT(*) 
+                FROM recipes 
+                WHERE id=:recipe_id 
+                AND visible=1"""
+        result = db.session.execute(sql, {"recipe_id": recipe_id}).fetchone()[0]
+        return result
+    except:
+        return False
 
 def is_own_recipe(recipe_id):
     sql = """SELECT creator_id 
