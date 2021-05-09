@@ -40,6 +40,8 @@
       alert("Salasanan pitää sisältää pieniä ja suuria kirjaimia.");
     } else if (form.password.value != form.password_check.value) {
       alert("Salasanat eivät täsmää.");
+    } else if (form.role.value != "0" && form.role.value != "1") {
+      alert("Valitse rooliksi käyttäjä tai ylläpitäjä.");
     } else {
       return true;
     }
